@@ -1,0 +1,80 @@
+<%- include('../../layout/header.ejs'); %>
+
+<script>
+    const onRequired = () => {
+        const fixed_asset_no = $('#fixed_asset_no').val();
+
+        if (fixed_asset_no) {
+            $('#fixed_asset_no').prop('required', false).removeClass('is-invalid');
+        } else {
+            $('#fixed_asset_no').prop('required', true).addClass('is-invalid');
+        }
+    }
+
+    const onFixedAsset = async () => {
+        const fixed_asset_no = $('#fixed_asset_no').val(), { company } = getLocalStoage();
+
+        if(fixed_asset_no) {
+            onRequired();
+            loader(true);
+            await axios.get(`/fixed-asset-card/search/${fixed_asset_no.trim()}/${company}`)
+            .then(function (response) {
+                const { data } = response.data;
+
+                setLocalStoage({
+                    ...getLocalStoage(),
+                    fixed_asset_no: data?.fixed_asset_no
+                });
+
+                const { company, fixed_asset_no } = getLocalStoage();
+
+                setTimeout(() => {
+                    window.location.href=`/fixed-asset-card/view/${fixed_asset_no}/${company}`;
+                }, 1500);
+            }).catch(function (err) {
+                alertMessage(err?.response?.data);
+            });
+        } else {
+            onRequired();
+        }
+    }
+</script>
+
+<%- include('../../layout/navbar.ejs'); %>
+
+<div class="container py-5">
+    <div class="row justify-content-center g-4">
+        <div class="col-12 text-center">
+            <img src="/images/NAV.png" class="rounded mx-auto d-block" width="120">
+        </div>
+        <div class="col-12">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="fixed_asset_no" placeholder="Fixed Asset No." autofocus autocomplete="off">
+                <label for="fixed_asset_no">
+                    Fixed Asset No.
+                    <label class="clickable-icon ms-2">
+                        <i class="fa-solid fa-qrcode clickable-icon"></i>
+                    </label>
+                </label>
+                <div class="invalid-feedback">
+                    Please specify the fixed asset no.
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="button" class="button btn-block w-100" onclick="onFixedAsset()">
+                <span class="button__icon">
+                    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+                </span>
+                <span class="button__text font-weight-bold">Search Fixed Asset</span>
+            </button>
+        </div>
+    </div>
+    <div class="col-12 fixed-bottom p-2 bg-light">
+        <button class="btn btn-sm btn-light rounded-3 w-100 shadow text-primary-emphasis" onclick="window.location.href='/menu'">
+            <i class="fa-solid fa-backward"></i> Backward
+        </button>
+    </div>
+</div>
+
+<%- include('../../layout/footer'); %>

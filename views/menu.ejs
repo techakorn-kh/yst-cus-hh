@@ -1,0 +1,42 @@
+<%- include('./layout/header.ejs'); %>
+
+<script>
+    const onInProgress = () => {
+        alertMessage({
+            status: 'info',
+            message: 'อยู่ระหว่างดำเนินการแก้ไขระบบ'
+        })
+    }
+</script>
+
+<%- include('./layout/navbar.ejs'); %>
+<div class="container py-4">
+    <div class="row justify-content-center g-3">
+        <div class="col-12">
+            <button type="button" class="button btn-block w-100" onclick="onInProgress()">
+                <span class="button__icon">
+                    <i class="fa-solid fa-cart-arrow-down fa-lg"></i>
+                </span>
+                <span class="button__text font-weight-bold">Good Receipt Notes</span>
+            </button>
+        </div>
+        <div class="col-12">
+            <button type="button" class="button btn-block w-100" onclick="window.location.href='/fixed-asset-card'">
+                <span class="button__icon">
+                    <i class="fa-solid fa-qrcode fa-lg"></i>
+                </span>
+                <span class="button__text font-weight-bold">Fixed Asset Card</span>
+            </button>
+        </div>
+        <div class="col-12">
+            <button type="button" class="button btn-block w-100" onclick="window.location.href='/search/page/physical-fixed-asset'">
+                <span class="button__icon">
+                    <i class="fa-solid fa-list-check fa-lg"></i>
+                </span>
+                <span class="button__text font-weight-bold">Physical Fixed Asset</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<%- include('./layout/footer'); %>

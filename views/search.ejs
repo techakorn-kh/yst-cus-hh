@@ -1,0 +1,61 @@
+<%- include('./layout/header.ejs'); %>
+
+<style>
+    
+</style>
+
+<script>
+    const onSearch = (params) => {
+        const document_no = $('#document_no').val();
+
+        window.location.href=`/search/page/${params}?document_no=${document_no ?? document_no.trim()}`;
+    }
+</script>
+
+<%- include('./layout/navbar.ejs'); %>
+<div class="container py-4">
+    <div class="row justify-content-center align-items-center g-3 bg-light">
+        <h6 class="col-12 font-semibold text-primary-emphasis" role="button" onclick="window.location.href='/menu'">
+            <label>
+                <i class="fa-solid fa-angles-left"></i> <%= title %>
+            </label>
+        </h6>
+        <div class="col-12">
+            <div class="form-floating">
+                <input type="search" class="form-control" id="document_no" placeholder="Document No." autofocus autocomplete="off" value="<%= query?.document_no %>" onsearch="onSearch('<%= module %>')">
+                <label for="document_no">
+                    Document No.
+                    <label class="clickable-icon ms-2">
+                        <i class="fa-solid fa-qrcode clickable-icon"></i>
+                    </label>
+                </label>
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="button" class="button btn-block w-100" onclick="window.location.href='/physical-fixed-asset'">
+                <span class="button__icon">
+                    <i class="fa-solid fa-plus fa-lg"></i>
+                </span>
+                <span class="button__text font-weight-bold">Add Document</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="row p-3 gy-2">
+        <% for(let i = 0; i < result.length; i++) {%>
+            <button type="button" class="btn bg-body-tertiary btn-lg btn-customize d-flex align-items-center rounded-4 shadow" onclick="window.location.href='<%= result[i]?.link %>'">
+                <span class="col-2 bg-primary-subtle me-2 d-flex rounded-5 align-items-center justify-content-center cus">
+                    <i class="fa-solid fa-file-lines text-primary"></i>
+                </span>
+                <small class="col-6 fw-semibold fs-5">
+                    <%= result[i]?.document_no %>
+                </small>
+                <small class="col-4 fs-6 text-break">
+                    <i class="fa-solid fa-user-tag me-1"></i><%= result[i]?.last_action %>
+                </small>
+            </button>
+        <% } %>
+    </div>
+</div>
+
+<%- include('./layout/footer'); %>

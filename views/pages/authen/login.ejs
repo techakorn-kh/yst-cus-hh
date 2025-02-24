@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <!-- title -->
+        <title><%= title %> | YST-CUS-HH</title>
+
+        <!-- style -->
+        <link rel="icon" href="/images/YST.png" type="image/png" sizes="16x16">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="/css/animate.min.css">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap-select.css">
+        <link rel="stylesheet" type="text/css" href="/css/sweetalert2.css">
+        <link rel="stylesheet" type="text/css" href="/css/custom.css">
+        <link rel="stylesheet" type="text/css" href="/css/input.css">
+
+        <!-- script -->
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/bootstrap-select.js"></script>
+        <script src="/js/axios.min.js"></script>
+        <script src="/js/solid.min.js"></script>
+        <script src="/js/all.min.js"></script>
+        <script src="/js/brands.min.js"></script>
+        <script src="/js/fontawesome.min.js"></script>
+        <script src="/js/regular.min.js"></script>
+        <script src="/js/solid.min.js"></script>
+        <script src="/js/sweetalert2.min.js"></script>
+        <script src="/js/moment.min.js"></script>
+        <script src="/js/alertMessage.js"></script>
+        <script src="/js/localStorage.js"></script>
+    </head>   
+    <body class="d-flex align-items-center py-4 bg-body-tertiary h-100">
+        <script>
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                // removeLocalStoage();
+            });
+
+            const onSignIn = async () => {
+                const is_username = $('#is_username').val();
+                const is_password = $('#is_password').val();
+                const is_company = $('#is_company').val();
+
+                await axios.post('/login/auth/login', {
+                    is_username,
+                    is_password,
+                    is_company
+                }).then(function (response) {
+                    setLocalStoage(response.data.data); 
+                    alertMessage(response.data);
+                }).catch(function (error) {
+                    console.log(error.response.data);
+                    alertMessage(error.response.data);
+                });
+            };
+        </script>
+
+        <main class="form-signin w-100 m-auto">
+            <div class="col-12 text-center">
+                <img src="/images/NAV.png" width="200">
+            </div>
+            
+            <div class="col-12 text-center py-3">
+                <label class="fw-semibold">Please sign in</label>
+                <p class="fs-6 py-0 my-0">version 25.0222.0</p>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="is_username" autocomplete="off" autofocus> <!-- Administrator -->
+                <label for="is_username">Username</label>
+            </div>
+        
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="is_password" autocomplete="off" autofocus> <!-- Bigwork**123 -->
+                <label for="is_password">Password</label>
+            </div>
+        
+            <div class="form-floating mb-3">
+                <select class="form-select" id="is_company" aria-label="Floating label select example" autocomplete="off" autofocus> <!-- YST -->
+                    <% for(let i = 0; i < companyArr.length; i++) { %>
+                        <option value="<%= companyArr[i]?.uuid %>"><%= companyArr[i]?.name %> | <%= companyArr[i]?.display_name %></option>
+                    <% } %>
+                </select>
+                <label for="is_company">Comapny</label>
+            </div>
+        
+            <button class="btn btn-primary w-100" type="button" onclick="onSignIn()">
+                <i class="fa-solid fa-right-to-bracket"></i> Sign in
+            </button>
+           
+            <div class="col-12 text-center py-3">
+                <label class="fs-6">Copyright © 2025 Bigworkthailand.com</label>
+            </div>
+        </main>
+    </body>
+</html>

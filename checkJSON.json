@@ -1,0 +1,150 @@
+{
+    "@odata.etag": "W/\"JzUyO2FzTUFBQUo3LzFBQVVnQXlBRE1BTVFBeUFDMEFNQUF3QURBQU1RQUFBQUNIRUNjQUFBQUExMDsxMzA5MzYzNTU3MDsn\"",
+    "Physical_FA_No": "PR2312-0001",
+    "Line_No": 10000,
+    "No": "FA2002-LA-0001",
+    "Description": "LAND",
+    "Department": "810-00",
+    "Responsible_Employee": "", /// ตัดออก
+    "FA_Class_Code": "LA",
+    "FA_Subclass_Code": "",
+    "FA_Location_Code": "810-00",
+    "FA_Check": false,
+    "Book_Value": 0,
+    "Status_OK": "No",
+    "Status_NG": "No",
+    "Status_LOSS": " Yes",
+    "Request_Sale": false,
+    "Request_Donation": false,
+    "Request_Write_Off": true,
+    "Remark": "",
+    "Asset_Location": "",
+    "HH_Check_Date": "0001-01-01",
+    "Main_Component": " ",
+    "Component_of": "",
+    "Acquisition_Date": "2002-10-24",
+    "Acquisition_Cost": 0,
+    "Total_Checked": 10, //เพิ่มเข้ามาใหม่
+    "Total_FA": 1000 //เพิ่มเข้ามาใหม่
+},
+
+
+{
+    "@odata.etag": "W/\"JzU2O2FzTUFBQUo3LzAwQVFRQkpBRTRBUVFCVEFGTUFSUUJVQURBQU1BQXhBQUFBQUljUUp3QUFBQUE9MTA7MTMwOTUwMTU0MTA7Jw==\"",
+    "Physical_FA_No": "MAINASSET001",
+    "Line_No": 10000,
+    "No": "FA2003-MC-0001",
+    "Description": "JIGU 23917-PPP",
+    "Department": "120-90",
+    "Responsible_Employee": "", /// ตัดออก
+    "FA_Class_Code": "MC", /// ตัดออก
+    "FA_Subclass_Code": "", /// ตัดออก
+    "FA_Location_Code": "120-90",
+    "FA_Check": false,
+    "Book_Value": 0,
+    "Status_OK": "No",
+    "Status_NG": "No",
+    "Status_LOSS": " Yes",
+    "Request_Sale": false,
+    "Request_Donation": false,
+    "Request_Write_Off": true,
+    "Remark": "",
+    "Asset_Location": "",
+    "HH_Check_Date": "0001-01-01", /// ตัดออก
+    "Main_Component": "Main Asset",
+    "Component_of": "FA2003-MC-0001",
+    "Acquisition_Date": "2003-08-01",
+    "Acquisition_Cost": 0,
+    "Total_Checked": 10, //เพิ่มเข้ามาใหม่
+    "Total_FA": 1000 //เพิ่มเข้ามาใหม่
+}
+
+
+
+{
+    "@odata.etag": "W/\"JzUyOzRCVUFBQUo3LzBZQVFRQXlBREFBTUFBeUFDMEFUd0JGQUMwQU1BQXdBREFBTVFBQUFBQUExMDsxMzA5Mzk0Mzg4MDsn\"",
+    "No": "FA2002-OE-0001",
+    "Description": "PRINTER HP DESJET 5550",
+    "Global_Dimension_1_Code": "810-00",
+    "Location_Code": "",
+    "FA_Model": "", //ตัดออก
+    "_Book_Value": 0,
+    "Acquisition_Date": "2002-10-24", //เพิ่มเข้ามาใหม่
+    "Acquisition_Cost": 0 //เพิ่มเข้ามาใหม่
+},
+
+
+
+
+{
+    "@odata.etag": "W/\"JzI0O0RnQUFBQUo3QXpFQU1BQXdBQUFBQUFBPTY7Njk4MzYxMDsn\"",
+    "Code": "100",
+    "Name": "FACTORY",
+    "Use_As_In_Transit": false,
+    "Require_Receive": false,
+    "Require_Shipment": false,
+    "Bin_Mandatory": false
+},
+
+
+{
+    "@odata.etag": "W/\"JzYwO1o4TUFBQUNMQVFBQUFBSjcvellBTVFBd0FERUFNQUExQUMwQU1BQTJBRElBQUFBQWh5Qk9BQUFBQUE9PTE7MDA7Jw==\"",
+    "documentType": "Order",
+    "documentNo": "610105-062",
+    "lineNo": 20000,
+    "buyFromVendorNo": "VMD-0013",
+    "buyFromVendorName": "SSK KOLAKARN CO., LTD.",
+    "type": "Item",
+    "no": "MAT-E/L-SSK006",
+    "description": "STAY E, EXH",
+    "description2": "(18307-TEA-T010-M1-740J)",
+    "trackingType": "LOTALL",
+    "requireExpDate": false,
+    "locationCode": "930-00",
+    "binCode": "",
+    "binMandatory": false,
+    "quantity": 6000,
+    "outstandingQuantity": 3600,
+    "qtyToReceive": 0,
+    "unitOfMeasureCode": "PCS",
+    "unitOfMeasure": "PCS",
+    "lastReceivingNo": "",
+    "maxQtyReceive": 6000,
+    "expectedReceiptDate": "2018-02-01",
+    "qtyToReceived": 2400
+},
+
+{
+    "bodyTransaction": "D:|PR2312-0001|10000|FA2002-LA-0001|true|false|false|false|false|false|ทดสอบ OK|ทดสอบ OK|WANNARAT|:E
+    \nD:|PR2312-0001|20000|FA2002-OE-0001|false|true|false|true|false|false|ทดสอบ NG-SALES|ทดสอบ NG-SALES|WANNARAT|:E
+    \nD:|PR2312-0001|30000|FA2003-BU-0001|false|true|false|false|true|false|ทดสอบ NG-DONATION|ทดสอบ NG-DONATION|WANNARAT|:E
+    \nD:|PR2312-0001|40000|FA2003-BU-0002|false|false|true|false|false|true|ทดสอบ LOSS-WRITE OFF|ทดสอบ LOSS-WRITE OFF|WANNARAT|:E"
+}
+
+
+{
+    "@odata.context": "http://192.168.2.102:2304/YST_Dev/ODataV4/$metadata#Company('YST')/PhysFAUpdate/$entity",
+    "@odata.etag": "W/\"JzE2O2JNTUFBQUNIQUFBQUFBQUExOzAwOyc=\"",
+    "Entry_No": 0,
+    "bodyTransaction": "OFF|WANNARAT|:E"
+}
+
+
+
+{
+    "@odata.etag": "W/\"JzgwO3Vod0FBQUo3LzBJQVNRQk9BQzBBVFFCQkFFNEFSQUJCQUFBQUFudi9RZ0JKQUU0QVVBQkJBRWtBU3dCTUFFRUFTUUF0QURBQU1RQUFBQUFBMTA7MTMwOTU0MDE1NjA7Jw==\"",
+    "Location_Code": "BIN-MANDA",
+    "Code": "BINPAIKLAI-01",
+    "Zone_Code": "",
+    "Description": "",
+    "Bin_Type_Code": "",
+    "Warehouse_Class_Code": "",
+    "Block_Movement": " ",
+    "Special_Equipment_Code": "",
+    "Bin_Ranking": 0,
+    "Maximum_Cubage": 0,
+    "Maximum_Weight": 0,
+    "Empty": true,
+    "Cross_Dock_Bin": false,
+    "Dedicated": false
+},

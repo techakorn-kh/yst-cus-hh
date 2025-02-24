@@ -1,0 +1,49 @@
+<script>
+    $(document).ready(function () {
+        getLocalStoage();
+        refreshToken();
+    });
+
+    const onSignOut = () => {
+        Swal.fire({
+            position: `center`,
+            icon: `question`,
+            title: `Sign Out`,
+            html: `Do you want to sign out?`,
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#1649bd",
+            allowOutsideClick: false
+        }).then((result) => {
+            if(result.isConfirmed) {
+                removeLocalStoage();
+            }
+        });
+    } 
+</script>
+
+<div class="row justify-content-between sticky-top p-2 bg-light shadow align-items-center" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <div class="col-5">
+        <img src="/images/NAV.png" width="120">
+    </div>
+    <div class="col-7 text-end">
+        <h6 class="text-secondary font-weight-bold mb-0">
+            <i class="fa-solid fa-user-tie"></i>
+            <span id="is_username"></span>
+        </h6>
+        <small class="text-secondary font-weight-bold" id="is_company"></small>
+    </div>
+</div>
+
+<div class="collapse shadow" id="collapseExample">
+    <div class="col-12 p-3">
+        <button type="button" class="button btn-block w-100" onclick="onSignOut()">
+            <span class="button__icon">
+                <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+            </span>
+            <span class="button__text font-weight-bold">Logout</span>
+        </button>
+    </div>
+</div>
+
+<script src="/js/bootstrap.bundle.min.js"></script>

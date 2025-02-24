@@ -1,0 +1,171 @@
+html,
+body {
+    height: 100% !important;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    background-attachment: fixed;
+    background-repeat: repeat-x;
+    background-position-x: center;
+    background-size: cover;
+    overflow-x: hidden;
+}
+
+.form-signin {
+    max-width: 400px;
+    padding: 1rem;
+}
+
+.form-signin .form-floating:focus-within {
+    z-index: 1;
+}
+
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.fs-5 {
+    font-size: 10pt !important;
+}
+
+.fs-6 {
+    font-size: 8pt !important;
+}
+
+.fs-7 {
+    font-size: 6pt !important;
+}
+
+body.swal2-height-auto {
+    height: 100% !important;
+}
+
+.button {
+    display: inline-flex;
+    height: 40px;
+    padding: 0;
+    background: #0d6efd;
+    color: white;
+    border: none;
+    outline: none;
+    border-radius: 14px;
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.button:hover,
+.button:active,
+.button:disabled {
+    color: #fff !important;
+    background: #0b5ed7;
+}
+.button__icon,
+.button__text {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 100%;
+    
+}
+.button__icon {
+    background: rgba(0, 0, 0, 0.08);
+    width: 60px;
+}
+.btn-block {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.loader {
+    position: relative;
+    width: 2.5em;
+    height: 2.5em;
+    transform: rotate(165deg);
+}
+   
+.loader:before, .loader:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 0.25em;
+    transform: translate(-50%, -50%);
+}
+   
+.loader:before {
+    animation: before8 2s infinite;
+}
+   
+.loader:after {
+    animation: after6 2s infinite;
+}
+   
+@keyframes before8 {
+    0% {
+        width: 0.5em;
+        box-shadow: 1em -0.5em rgba(225, 20, 98, 0.75), -1em 0.5em rgba(111, 202, 220, 0.75);
+    }
+
+    35% {
+        width: 2.5em;
+        box-shadow: 0 -0.5em rgba(225, 20, 98, 0.75), 0 0.5em rgba(111, 202, 220, 0.75);
+    }
+
+    70% {
+        width: 0.5em;
+        box-shadow: -1em -0.5em rgba(225, 20, 98, 0.75), 1em 0.5em rgba(111, 202, 220, 0.75);
+    }
+
+    100% {
+        box-shadow: 1em -0.5em rgba(225, 20, 98, 0.75), -1em 0.5em rgba(111, 202, 220, 0.75);
+    }
+}
+
+@keyframes after6 {
+    0% {
+        height: 0.5em;
+        box-shadow: 0.5em 1em rgba(61, 184, 143, 0.75), -0.5em -1em rgba(233, 169, 32, 0.75);
+    }
+
+    35% {
+        height: 2.5em;
+        box-shadow: 0.5em 0 rgba(61, 184, 143, 0.75), -0.5em 0 rgba(233, 169, 32, 0.75);
+    }
+
+    70% {
+        height: 0.5em;
+        box-shadow: 0.5em -1em rgba(61, 184, 143, 0.75), -0.5em 1em rgba(233, 169, 32, 0.75);
+    }
+
+    100% {
+        box-shadow: 0.5em 1em rgba(61, 184, 143, 0.75), -0.5em -1em rgba(233, 169, 32, 0.75);
+    }
+}
+   
+.loader {
+    position: absolute;
+    top: calc(50% - 1.25em);
+    left: calc(50% - 1.25em);
+}
+
+.cus {
+    width: 1.8em;
+    height: 1.8em;
+}
+
+body.swal2-shown > [aria-hidden='true'] {
+    transition: 0.1s filter !important;
+    filter: blur(3px) !important;
+}  

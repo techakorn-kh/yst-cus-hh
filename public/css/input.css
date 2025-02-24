@@ -1,0 +1,23 @@
+input:required:invalid,
+select:required:invalid,
+textarea:required:invalid {
+  border-color: #dc3545;
+}
+
+input:required:invalid:focus,
+select:required:invalid:focus,
+textarea:required:invalid:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+input.form-control:-moz-read-only:focus, select.form-control:-moz-read-only:focus, textarea.form-control:-moz-read-only:focus {
+  border-color: #ced4da !important;
+  box-shadow: unset !important;
+}
+
+input.form-control:read-only:focus,
+select.form-control:read-only:focus,
+textarea.form-control:read-only:focus {
+  border-color: #ced4da !important;
+  box-shadow: unset !important;
+}

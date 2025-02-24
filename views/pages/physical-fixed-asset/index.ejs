@@ -1,0 +1,67 @@
+<%- include('../../layout/header.ejs'); %>
+
+<script>
+    const onPhysicalFixedAsset = async () => {
+        const physical_fa_no = $('#physical_fa_no').val(), { company_id } = getLocalStoage();
+
+        if(physical_fa_no) {
+            loader(true);
+            await axios.get(`/physical-fixed-asset/download/${physical_fa_no}/${company_id}`)
+            .then(function (response) {
+                const data = response.data;
+    
+                setLocalStoage({
+                    ...getLocalStoage(),
+                    physical_fa_no: data?.physical_fa_no,
+                    physical_fa_no_id: data?.uuid
+                });
+
+                const { physical_fa_no_id, company_id } = getLocalStoage();
+
+                setTimeout(() => {
+                    window.location.href=`/physical-fixed-asset/list/${physical_fa_no_id}/${company_id}`;
+                }, 1500);
+            }).catch(function (err) {
+                alertMessage(err?.response?.data);
+            });
+        }
+    }
+</script>
+
+<%- include('../../layout/navbar.ejs'); %>
+
+<div class="container py-3">
+    <div class="row justify-content-center align-items-center">
+        <h5 class="col-12 font-semibold text-primary-emphasis" role="button" onclick="window.location.href='/search/page/physical-fixed-asset'">
+            <label>
+                <i class="fa-solid fa-angles-left"></i> <%= title %>
+            </label>
+        </h5>
+        <div class="col-12 py-3">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="physical_fa_no" placeholder="Physical FA No." autofocus autocomplete="off">
+                        <label for="physical_fa_no">
+                            Physical FA No.
+                            <label class="clickable-icon ms-2">
+                                <i class="fa-solid fa-qrcode clickable-icon"></i>
+                            </label>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="button" class="button btn-block w-100" onclick="onPhysicalFixedAsset()">
+                        <span class="button__icon">
+                            <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+                        </span>
+                        <span class="button__text font-weight-bold">Search Physical FA No</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<%- include('../../layout/footer'); %>

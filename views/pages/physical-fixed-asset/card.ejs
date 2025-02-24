@@ -1,0 +1,395 @@
+<%- include('../../layout/header.ejs'); %>
+
+<script>
+    $(document).ready(function () {
+        setLocalStoage({
+            ...getLocalStoage(),
+            physical_fa_no: '<%= header?.physical_fa_no %>',
+            physical_fa_no_id: '<%= header?.uuid %>'
+        });
+
+    });
+
+    const onSearch = () => {
+        const no = $('#no').val(), { physical_fa_no_id, company_id } = getLocalStoage();
+
+        if(!no) {
+            window.location.href=`/physical-fixed-asset/card/${physical_fa_no_id}/${company_id}/null`;
+        } else {
+            loader(true);
+
+            setTimeout(() => {
+                window.location.href=`/physical-fixed-asset/card/${physical_fa_no_id}/${company_id}/${no ? no.trim() : null}`;
+            }, 500);
+        }
+    }
+
+    const onModal = async (id, no, line_no) => {
+        const { physical_fa_no_id, company_id } = getLocalStoage();
+
+        await axios.get(`/physical-fixed-asset/check-action/${physical_fa_no_id}/${company_id}/${no}/${line_no}`)
+        .then(function (response) {
+            const { is_checked, updated_by, updatedAt } = response.data;
+
+            if (!is_checked) {
+                $(`${id}`).modal('show');
+            } else {
+                Swal.fire({
+                    position: "center",
+                    icon: 'warning',
+                    title: 'Warning',
+                    html: `
+                        <b>This asset has been counted!</b><br><br>
+                        <small>Counted by: <b>${updated_by}</b></small><br>
+                        <small>Counted date: <b>${updatedAt}</b></small><br><br>
+                        Do you want to count the asset again?
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonColor: "#1649bd",
+                    confirmButtonText: 'Confirm',
+                    showCancelButton: true,
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result?.isConfirmed) {
+                        $(`${id}`).modal('show');
+                    }
+                });
+            }
+        }).catch(function (error) {
+            console.log(error.response.data);
+            alertMessage(err?.response?.data);
+        });
+    }
+
+    const onStatusChecked = (line) => {
+        const type = $(`input[name="statusRadio${line}"]:checked`).val();
+
+        switch(type) {
+            case 'OK':
+                $(`#sub-status${line}`).hide();
+                break;
+
+            case 'NG':
+                $(`#sub-status${line}`).show();
+                $(`#div-sub-status${line}`).html(`
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="subStatusRadio${line}" id="subStatusRadio1${line}" value="SALE" checked>
+                        <label class="form-check-label" for="subStatusRadio1${line}">SALE</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="subStatusRadio${line}" id="subStatusRadio2${line}" value="DONATION">
+                        <label class="form-check-label" for="subStatusRadio2${line}">DONATION</label>
+                    </div>
+                `);
+                break;
+
+            case 'LOSS':
+                $(`#sub-status${line}`).show();
+                $(`#div-sub-status${line}`).html(`
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="subStatusRadio${line}" id="subStatusRadio1${line}" value="WRITE-OFF" checked>
+                        <label class="form-check-label" for="subStatusRadio1${line}">WRITE-OFF</label>
+                    </div>
+                `);
+                break;
+        }
+    }
+
+    const onSaved = async (no, line_no) => {
+        const status = $(`input[name="statusRadio${line_no}"]:checked`).val(),
+        subStatus = $(`input[name="subStatusRadio${line_no}"]:checked`).val(),
+        remark = $(`#remark${line_no}`).val(),
+        asset_location = $(`#asset_location${line_no}`).val(),
+        { physical_fa_no_id, company_id } = getLocalStoage();
+
+        const dataset = {
+            status_ok: 'No',
+            status_ng: 'No',
+            status_loss: 'No',
+            request_sale: false,
+            request_donation: false,
+            request_write_off: false,
+            remark,
+            asset_location
+        }
+
+        switch(status) {
+            case 'OK':
+                dataset.status_ok = 'Yes';
+                break;
+
+            case 'NG':
+                dataset.status_ng = 'Yes';
+                
+                switch(subStatus) {
+                    case 'SALE':
+                        dataset.request_sale = true;
+                        break;
+
+                    case 'DONATION':
+                        dataset.request_donation = true;
+                        break;
+
+                    default: 
+                        dataset.request_sale = true;
+                }
+                break;
+
+            case 'LOSS':
+                dataset.status_loss = 'Yes';
+                dataset.request_write_off = true;
+                break;
+        }
+
+        loader(true);
+
+        setTimeout(async () => {
+            await axios.put(`/physical-fixed-asset/update/${physical_fa_no_id}/${company_id}/${no}/${line_no}`, dataset)
+            .then(function (response) {
+                alertMessage(response.data);
+            }).catch(function (error) {
+                console.log(error.response.data);
+                alertMessage(err?.response?.data);
+            });
+        }, 500);
+    }
+
+</script>
+
+<%- include('../../layout/navbar.ejs'); %>
+
+<div class="container py-3">
+    <div class="row justify-content-center align-items-center">
+        <h5 class="col-12 font-semibold text-primary-emphasis" role="button" onclick="window.location.href='/physical-fixed-asset/list/<%= params?.physical_fa_no_id %>/<%= params?.company_id %>'">
+            <label>
+                <i class="fa-solid fa-angles-left"></i> <%= title %>
+            </label>
+        </h5>
+
+        <!-- Headers -->
+        <div class="col-12 py-3">
+            <div class="row g-3">
+                <!-- Physical FA No. -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="physical_fa_no" value="<%= header?.physical_fa_no %>" disabled>
+                        <label for="physical_fa_no">
+                            Physical FA No.
+                        </label>
+                    </div>
+                </div>
+
+                <!-- FA Location Code -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="fa_location_code" value="<%= header?.location %>" disabled>
+                        <label for="fa_location_code">
+                            FA Location Code
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Fixed Asset No. -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="search" class="form-control" id="no" placeholder="Fixed Asset No." autofocus autocomplete="off" onsearch="onSearch()" 
+                        value="<%= params?.no !== 'null' ? params?.no : '' %>">
+                        <label for="no">
+                            Fixed Asset No.
+                            <label class="clickable-icon ms-2">
+                                <i class="fa-solid fa-qrcode clickable-icon"></i>
+                            </label>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Fixed Asset No. -->
+                <% for(let i = 0; i < details.length; i++) { %>
+                    <div class="col-12">
+                        <div class="card rounded-3 shadow">
+                            <div class="card-header">
+                                <div class="row align-items-center fw-semibold fs-5">
+                                    <span class="col-2 bg-primary-subtle mx-2 d-flex rounded-5 align-items-center justify-content-center cus">
+                                        <i class="fa-solid fa-file-lines text-primary"></i>
+                                    </span>
+                                    <small class="col-6 fw-semibold fs-5 px-0 mx-0">
+                                        <%= details[i]?.no %>
+                                    </small>
+                                    <small class="col-3 px-0 mx-0">
+                                        <% if(details[i]?.statusCode === 'OK') { %>
+                                            <span class="badge rounded-pill text-bg-success w-100"><%= details[i]?.statusText %></span>
+                                        <% } else if(details[i]?.statusCode === 'NG') { %>
+                                            <span class="badge rounded-pill text-bg-warning w-100 text-white"><%= details[i]?.statusText %></span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill text-bg-danger w-100"><%= details[i]?.statusText %></span>
+                                        <% } %>
+                                    </small>
+                                    <% if(details[i]?.is_checked) { %>
+                                        <span class="bg-success-subtle mx-2 d-flex rounded-5 align-items-center justify-content-center cus">
+                                            <i class="fa-solid fa-circle-check text-success"></i>
+                                        </span>
+                                    <% } %>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-2">
+                                <div class="shadow p-2 border border-1 rounded-3">
+                                    <div class="row fs-7 g-2 pt-2">
+                                        <div class="col-3 text-end pe-0">FA No. :</div>
+                                        <div class="col-4 px-1"><%= details[i]?.no %></div>
+                                        <div class="col-2 text-end ps-1 pe-0">ACQ. Cost :</div>
+                                        <div class="col-3 px-1"><%= details[i]?.acquisition_cost %></div>
+                                    </div>
+                                    <div class="row fs-7 g-2 pt-2">
+                                        <div class="col-3 text-end pe-0">FA Desc : </div>
+                                        <div class="col-4 px-1"><%= details[i]?.description %></div>
+                                        <div class="col-2 text-end ps-1 pe-0">FA Location :</div>
+                                        <div class="col-3 px-1"><%= details[i]?.fa_location_code %></div>
+                                    </div>
+                                    <div class="row fs-7 g-2 pt-2">
+                                        <div class="col-3 text-end pe-0">Receive Date : </div>
+                                        <div class="col-4 px-1"><%= moment(details[i]?.acquisition_date).format('DD/MM/YYYY') %></div>
+                                        
+                                        <div class="col-2 text-end ps-1 pe-0">Department :</div>
+                                        <div class="col-3 px-1"><%= details[i]?.department %></div>
+                                    </div>
+                                    <div class="row fs-7 g-2 pt-2">
+                                        <div class="col-3 text-end pe-0">Book Val : </div>
+                                        <div class="col-4 px-1"><%= details[i]?.book_value %></div>
+                                        <div class="col-5"></div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <small class="text-primary-emphasis fs-7">
+                                        Remark:
+                                        <span class="text-primary-emphasis fw-semibold ms-1">
+                                            <%= details[i]?.remark %>
+                                        </span>
+                                    </small>
+                                </div>
+                                <div class="col-12">
+                                    <small class="text-primary-emphasis fs-7">
+                                        Asset Location:
+                                        <span class="text-primary-emphasis fw-semibold ms-1">
+                                            <%= details[i]?.asset_location %>
+                                        </span>
+                                    </small>
+                                </div>
+                                <% if(!details[i]?.fa_check) { %>
+                                    <div class="col-12 text-end">
+                                        <!-- Button trigger modal -->
+                                        <!-- <button type="button" class="btn btn-warning btn-sm rounded-3 px-4 text-white fw-semibold fs-6" data-bs-toggle="modal" data-bs-target="#staticBackdrop<%= details[i]?.line_no %>">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        </button> -->
+
+                                        <button type="button" class="btn btn-warning btn-sm rounded-3 px-4 text-white fw-semibold fs-6" 
+                                        onclick="onModal('#staticBackdrop<%= details[i]?.line_no %>','<%= details[i]?.no %>','<%= details[i]?.line_no %>')">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        </button>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop<%= details[i]?.line_no %>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop<%= details[i]?.line_no %>Label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdrop<%= details[i]?.line_no %>Label">Edit - <%= details[i]?.no %></h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row g-2 fs-5 px-2 fw-semibold">
+                                        <!-- Status -->
+                                        <label for="status">Status</label>
+                                        <div class="col-12 pt-1">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="statusRadio<%= details[i]?.line_no %>" id="statusRadio1<%= details[i]?.line_no %>" value="OK" 
+                                                onclick="onStatusChecked('<%= details[i]?.line_no %>')" <%= details[i]?.statusCode === 'OK' ? 'checked' : '' %>>
+                                                <label class="form-check-label" for="statusRadio1<%= details[i]?.line_no %>">OK</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="statusRadio<%= details[i]?.line_no %>" id="statusRadio2<%= details[i]?.line_no %>" value="NG" 
+                                                onclick="onStatusChecked('<%= details[i]?.line_no %>')" <%= details[i]?.statusCode === 'NG' ? 'checked' : '' %>>
+                                                <label class="form-check-label" for="statusRadio2<%= details[i]?.line_no %>">NG</label>
+                                                </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="statusRadio<%= details[i]?.line_no %>" id="statusRadio3<%= details[i]?.line_no %>" value="LOSS" onclick="onStatusChecked('<%= details[i]?.line_no %>')" <%= details[i]?.statusCode === 'LOSS' ? 'checked' : '' %>>
+                                                <label class="form-check-label" for="statusRadio3<%= details[i]?.line_no %>">LOSS</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sub-Status -->
+                                        <% if(details[i]?.statusCode === 'OK') { %>
+                                            <div id="sub-status<%= details[i]?.line_no %>" style="display: none;">
+                                        <% } else { %>
+                                            <div id="sub-status<%= details[i]?.line_no %>">
+                                        <% } %>
+                                            <% if(details[i]?.is_checked) { %>
+                                                <label for="sub-status">Sub-Status <%= details[i]?.statusCode %></label>
+                                                <div class="col-12 pt-1" id="div-sub-status<%= details[i]?.line_no %>">
+                                                    <% if(details[i]?.statusCode === 'NG') { %>
+                                                        <!-- NG -->
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="subStatusRadio<%= details[i]?.line_no %>" id="subStatusRadio1<%= details[i]?.line_no %>" value="SALE" <%= details[i]?.request_sale ? 'checked' : '' %>>
+                                                            <label class="form-check-label" for="subStatusRadio1<%= details[i]?.line_no %>">SALE</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="subStatusRadio<%= details[i]?.line_no %>" id="subStatusRadio2<%= details[i]?.line_no %>" value="DONATION" <%= details[i]?.request_donation ? 'checked' : '' %>>
+                                                            <label class="form-check-label" for="subStatusRadio2<%= details[i]?.line_no %>">DONATION</label>
+                                                        </div>
+                                                    <% } else if(details[i]?.statusCode === 'LOSS') { %>
+                                                        <!-- LOSS -->
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="subStatusRadio<%= details[i]?.line_no %>" id="subStatusRadio1<%= details[i]?.line_no %>" value="WRITE-OFF" <%= details[i]?.request_write_off ? 'checked' : '' %>>
+                                                            <label class="form-check-label" for="subStatusRadio1<%= details[i]?.line_no %>">WRITE-OFF</label>
+                                                        </div>
+                                                    <% } %>
+                                                </div>
+                                            <% } else { %>
+                                                <label for="sub-status">Sub-Status</label>
+                                                <div class="col-12 pt-1" id="div-sub-status<%= details[i]?.line_no %>">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="subStatusRadio<%= details[i]?.line_no %>" id="subStatusRadio1<%= details[i]?.line_no %>" value="WRITE-OFF" checked>
+                                                        <label class="form-check-label" for="subStatusRadio1<%= details[i]?.line_no %>">WRITE-OFF</label>
+                                                    </div>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                        
+                                        <!-- Remark -->
+                                        <div class="col-12">
+                                            <div class="form-floating">
+                                                <textarea class="form-control" id="remark<%= details[i]?.line_no %>" autocomplete="off" maxlength="100"><%= details[i]?.remark %></textarea>
+                                                <label for="remark">Remark</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Asset Location -->
+                                        <div class="col-12">
+                                            <div class="form-floating">
+                                                <textarea class="form-control" id="asset_location<%= details[i]?.line_no %>" autocomplete="off" maxlength="100"><%= details[i]?.asset_location %></textarea>
+                                                <label for="asset_location">Asset Location</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12 text-end">
+                                            <button type="button" class="btn btn-success btn-sm rounded-3 px-4 fs-5" 
+                                            onclick="onSaved('<%= details[i]?.no %>','<%= details[i]?.line_no %>')">
+                                                <i class="fa-solid fa-floppy-disk"></i> Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../../layout/footer'); %>

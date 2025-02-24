@@ -1,0 +1,53 @@
+<%- include('../../layout/header.ejs'); %>
+
+<script>
+   
+</script>
+
+<%- include('../../layout/navbar.ejs'); %>
+
+<div class="container py-3">
+    <div class="row justify-content-center align-items-center">
+        <h5 class="col-12 font-semibold text-primary-emphasis" role="button" onclick="window.location.href='/fixed-asset-card'">
+            <label>
+                <i class="fa-solid fa-angles-left"></i> <%= title %>
+            </label>
+        </h5>
+        <div class="col-12 py-3">
+            <div class="row g-2">
+                <div class="col-12 form-floating">
+                    <input type="text" class="form-control" id="floatingInput1" value="<%= result?.fixed_asset_no %>" readonly disabled>
+                    <label for="floatingInput1">FA No.</label>
+                </div>
+                <div class="col-12 form-floating">
+                    <input type="text" class="form-control" id="floatingInput2" value="<%= result?.description %>" readonly disabled>
+                    <label for="floatingInput2">FA Description</label>
+                </div>
+                <div class="col-12 form-floating">
+                    <input type="text" class="form-control" id="floatingInput" value="<%= moment(result?.acquisition_date).format('DD/MM/YYYY') %>" readonly disabled>
+                    <label for="floatingInput">Receive Date</label>
+                </div>
+                <div class="col-12 form-floating">
+                    <input type="text" class="form-control" id="floatingInput" value="<%= result?.book_value %>" readonly disabled>
+                    <label for="floatingInput">Book Value</label>
+                </div>
+                <div class="col-12 form-floating">
+                    <input type="text" class="form-control" id="floatingInput" value="<%= result?.acquisition_cost %>" readonly disabled>
+                    <label for="floatingInput">Acquisition Cost</label>
+                </div>
+                <div class="col-12 form-floating">
+                    <input type="text" class="form-control" id="floatingInput" value="<%= result?.location_code %>" readonly disabled>
+                    <label for="floatingInput">FA Location</label>
+                </div>
+                <div class="col-12 form-floating">
+                    <input type="text" class="form-control" id="floatingInput" value="<%= result?.dimension %>" readonly disabled>
+                    <label for="floatingInput">Department</label>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    
+</div>
+
+<%- include('../../layout/footer'); %>

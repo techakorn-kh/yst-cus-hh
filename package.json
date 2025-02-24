@@ -1,0 +1,39 @@
+{
+  "name": "yst-cus-hh",
+  "version": "1.0.0",
+  "description": "Customize Handheld",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "dev": "nodemon ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "animate.css": "^4.1.1",
+    "axios": "^1.7.9",
+    "axios-ntlm": "^1.4.3",
+    "bcrypt": "^5.1.1",
+    "bootstrap": "^5.3.3",
+    "bootstrap-select": "^1.13.18",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "jquery": "^3.7.1",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "node-windows": "^1.0.0-beta.8",
+    "sequelize": "^6.37.5",
+    "sweetalert2": "^11.15.10",
+    "tedious": "^18.6.1",
+    "uuid": "^11.0.5",
+    "yst-cus-hh": "file:"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

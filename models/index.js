@@ -1,0 +1,19 @@
+// Module MD - Master Data
+const md100Users = require('./md/md_100_users');
+const md101Companies = require('./md/md_101_companies');
+const md102WebServices = require('./md/md_102_web_services');
+const md103Locations = require('./md/md_103_locations');
+
+// Module WH - Warehouse
+const wh100PhysicalFixedAssetHead = require('./wh/wh_100_physical_fixed_asset_head');
+const wh101PhysicalFixedAssetDetail = require('./wh/wh_101_physical_fixed_asset_detail');
+
+module.exports = {
+    md100Users,
+    md101Companies,
+    md102WebServices,
+    md103Locations,
+
+    wh100PhysicalFixedAssetHead,
+    wh101PhysicalFixedAssetDetail
+}

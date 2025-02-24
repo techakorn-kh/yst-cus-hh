@@ -1,0 +1,36 @@
+<------ Check Reopen ------>
+
+Method: GET
+
+Link: http://192.168.2.101:5500/api/check-reopen/physical-fixed-asset/FA2024-BU-0005/YST
+
+example: http://192.168.2.101:5500/api/check-reopen/physical-fixed-asset/{{ physical_fa_no }}/{{ company }}
+
+headers: {
+    Authorization: Bearer U2FsdGVkX1/hQdn6et7WIHUcRi/zQDLj/opDXjhQXNWWGmIavfdLOHOtBxZpiFjn
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+<------ Delete Reopen ------>
+
+Method: DELETE
+
+Link: http://192.168.2.101:5500/api/check-reopen/physical-fixed-asset/FA2024-BU-0005/YST
+
+example: http://192.168.2.101:5500/api/check-reopen/physical-fixed-asset/{{ physical_fa_no }}/{{ company }}
+
+headers: {
+    Authorization: Bearer U2FsdGVkX1/hQdn6et7WIHUcRi/zQDLj/opDXjhQXNWWGmIavfdLOHOtBxZpiFjn
+}
+
+
+
+D:documentNo|lineNo|faNo|statusOK|statusNG|statusLoss|requestSales|requsetDonation|requestWriteOff|remark|assetLocation:E
+D:PR2312-0001|10000|FA2002-LA-0001|true|false|false|false|false|false|null|null:E
+D:PR2312-0001|20000|FA2002-OE-0001|true|false|false|false|false|false|null|null:E
+D:PR2312-0001|30000|FA2003-BU-0001|true|false|false|false|false|false|null|null:E
+
+
+
+D:|PR2312-0001|10000|FA2002-LA-0001|true|false|false|false|false|false|ทดสอบ OK|ทดสอบ OK|WANNARAT|:E\n

@@ -1,0 +1,208 @@
+<%- include('../../layout/header.ejs'); %>
+
+<script>
+    $(document).ready(function () {
+        setLocalStoage({
+            ...getLocalStoage(),
+            physical_fa_no: '<%= header?.physical_fa_no %>',
+            physical_fa_no_id: '<%= header?.uuid %>'
+        });
+    });
+
+    const onPending = () => {
+        const { physical_fa_no_id, company_id } = getLocalStoage();
+
+        loader(true);
+
+        setTimeout(() => {
+            window.location.href=`/physical-fixed-asset/pending/${physical_fa_no_id}/${company_id}`;
+        }, 500);
+    }
+
+    const onAccess = () => {
+        const { physical_fa_no_id, company_id } = getLocalStoage();
+
+        loader(true);
+
+        setTimeout(() => {
+            window.location.href=`/physical-fixed-asset/card/${physical_fa_no_id}/${company_id}/null`;
+        }, 500);
+    }
+
+    const onConfirm = () => {
+        const { physical_fa_no, physical_fa_no_id, company_id } = getLocalStoage();
+
+        Swal.fire({
+            position: "center",
+            icon: 'question',
+            title: 'Question'.toUpperCase(),
+            html: `Do you want to submit the ${physical_fa_no} document data to Microsoft Dynamics NAV?`,
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#1649bd",
+            confirmButtonText: '<i class="fa-solid fa-circle-check"></i> Confirm',
+            allowOutsideClick: false
+        }).then(async (result) => {
+            if (result?.isConfirmed) {
+                loader(true);
+                await axios.post('/physical-fixed-asset/update-transaction', {
+                    physical_fa_no_id,
+                    company_id
+                }).then(function (response) {
+                    const { data } = response.data;
+    
+                    setLocalStoage({
+                        ...getLocalStoage(),
+                        physical_fa_no: data?.physical_fa_no,
+                        physical_fa_no_id: data?.uuid
+                    });
+
+                    const { physical_fa_no_id, company_id } = getLocalStoage();
+
+                    alertMessage({
+                        ...response.data, 
+                        backward: `/physical-fixed-asset/list/${physical_fa_no_id}/${company_id}`
+                    });
+
+                }).catch(function (error) {
+                    console.log(error.response.data);
+                    alertMessage(err?.response?.data);
+                });
+            }
+        });
+    }
+
+</script>
+
+<%- include('../../layout/navbar.ejs'); %>
+
+<div class="container py-3">
+    <div class="row justify-content-center align-items-center">
+        <h5 class="col-12 fw-semibold text-primary-emphasis" role="button" onclick="window.location.href='/search/page/physical-fixed-asset'">
+            <label>
+                <i class="fa-solid fa-angles-left"></i> <%= title %>
+            </label>
+        </h5>
+
+        <!-- Headers -->
+        <div class="col-12 py-3 mb-5">
+            <div class="row g-2">
+                <!-- Physical FA No. -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="physical_fa_no" value="<%= header?.physical_fa_no %>" disabled>
+                        <label for="physical_fa_no">
+                            Physical FA No.
+                        </label>
+                    </div>
+                </div>
+
+                <!-- FA Location Code -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="fa_location_code" value="<%= header?.location %>" disabled>
+                        <label for="fa_location_code">
+                            FA Location Code
+                        </label>
+                    </div>
+                </div>
+                <!-- FA Location Code -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="fa_location_code" value="<%= header?.total_check %>/<%= header?.total_fa %>" disabled>
+                        <label for="fa_location_code">
+                            Counted Assets
+                        </label>
+                    </div>
+                </div>
+                <!-- FA Location Code -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="fa_location_code" value="<%= moment(header?.updatedAt).format('DD/MM/YYYY HH:mm') %>" disabled>
+                        <label for="fa_location_code">
+                            Last Date Modify
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Button Pending Fixed Asset -->
+                <div class="col-12">
+                    <a class="btn btn-secondary btn-sm rounded-3 px-4 w-100" onclick="onPending()">
+                        <i class="fa-solid fa-circle-info"></i> Pending Fixed Asset 
+                        <span class="badge rounded-pill bg-danger">
+                            <%= header?.pending %>
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Button Access -->
+                <div class="col-12">
+                    <a class="btn btn-primary btn-sm rounded-3 px-4 w-100" onclick="onAccess()">
+                        <i class="fa-solid fa-circle-check"></i> Access
+                    </a>
+                </div>
+            </div>
+
+            <!-- Fixed Asset No. -->
+            <% for(let i = 0; i < details.length; i++) { %>
+                <div class="col-12 pt-2">
+                    <div class="card rounded-3 shadow">
+                        <div class="card-header">
+                            <div class="row align-items-center fw-semibold fs-5">
+                                <span class="col-2 bg-primary-subtle mx-2 d-flex rounded-5 align-items-center justify-content-center cus">
+                                    <i class="fa-solid fa-file-lines text-primary"></i>
+                                </span>
+                                <small class="col-6 fw-semibold fs-5 px-0 mx-0">
+                                    <%= details[i]?.no %>
+                                </small>
+                                <small class="col-3 px-0 mx-0">
+                                    <% if(details[i]?.statusCode === 'OK') { %>
+                                        <span class="badge rounded-pill text-bg-success w-100"><%= details[i]?.statusText %></span>
+                                    <% } else if(details[i]?.statusCode === 'NG') { %>
+                                        <span class="badge rounded-pill text-bg-warning w-100 text-white"><%= details[i]?.statusText %></span>
+                                    <% } else { %>
+                                        <span class="badge rounded-pill text-bg-danger w-100"><%= details[i]?.statusText %></span>
+                                    <% } %>
+                                </small>
+                                <% if(details[i]?.is_checked) { %>
+                                    <span class="bg-success-subtle mx-2 d-flex rounded-5 align-items-center justify-content-center cus">
+                                        <i class="fa-solid fa-circle-check text-success"></i>
+                                    </span>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-2">
+                            <div class="col-12">
+                                <small class="text-primary-emphasis fs-7">
+                                    Remark:
+                                    <span class="text-primary-emphasis fw-semibold ms-1">
+                                        <%= details[i]?.remark %>
+                                    </span>
+                                </small>
+                            </div>
+                            <div class="col-12">
+                                <small class="text-primary-emphasis fs-7">
+                                    Asset Location:
+                                    <span class="text-primary-emphasis fw-semibold ms-1">
+                                        <%= details[i]?.asset_location %>
+                                    </span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <% if(details.length > 0) { %>
+            <div class="col-12 fixed-bottom py-2">
+                <button class="btn btn-sm btn-primary rounded-3 w-100" onclick="onConfirm()">
+                    <i class="fa-solid fa-paper-plane"></i> Confirm to NAV
+                </button>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../../layout/footer.ejs'); %>
