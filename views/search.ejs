@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="col-12">
-            <button type="button" class="button btn-block w-100" onclick="window.location.href='/physical-fixed-asset'">
+            <button type="button" class="button btn-block w-100" onclick="window.location.href='<%= link %>'">
                 <span class="button__icon">
                     <i class="fa-solid fa-plus fa-lg"></i>
                 </span>
@@ -42,19 +42,7 @@
     </div>
 
     <div class="row p-3 gy-2">
-        <% for(let i = 0; i < result.length; i++) {%>
-            <button type="button" class="btn bg-body-tertiary btn-lg btn-customize d-flex align-items-center rounded-4 shadow" onclick="window.location.href='<%= result[i]?.link %>'">
-                <span class="col-2 bg-primary-subtle me-2 d-flex rounded-5 align-items-center justify-content-center cus">
-                    <i class="fa-solid fa-file-lines text-primary"></i>
-                </span>
-                <small class="col-6 fw-semibold fs-5">
-                    <%= result[i]?.document_no %>
-                </small>
-                <small class="col-4 fs-6 text-break">
-                    <i class="fa-solid fa-user-tag me-1"></i><%= result[i]?.last_action %>
-                </small>
-            </button>
-        <% } %>
+        <%- details %>
     </div>
 </div>
 

@@ -1,3 +1,3 @@
 # yst-cus-hh
 
-YST Customize Handheld
+Customize Handheld

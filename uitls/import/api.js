@@ -18,6 +18,10 @@ const navArr = [
     {
         api_name: `PhysFAUpdate`,
         api_link: `http://192.168.2.102:2304/YST_Dev/ODataV4/Company(#-company-#)/PhysFAUpdate`
+    },
+    {
+        api_name: `GetAPIGoodReceiptNotes`,
+        api_link: `http://192.168.2.102:2304/YST_Dev/ODataV4/Company(#-company-#)/GetAPIGoodReceiptNotes`
     }
 ];
 

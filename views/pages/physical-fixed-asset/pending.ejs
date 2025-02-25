@@ -13,65 +13,8 @@
         <!-- Headers -->
         <div class="col-12 py-3 mb-5">
             <!-- Fixed Asset No. -->
-            <% for(let i = 0; i < details.length; i++) { %>
-                <div class="col-12 pt-2">
-                    <div class="card rounded-3 shadow">
-                        <div class="card-header">
-                            <div class="row align-items-center fw-semibold fs-5">
-                                <span class="col-2 bg-primary-subtle mx-2 d-flex rounded-5 align-items-center justify-content-center cus">
-                                    <i class="fa-solid fa-file-lines text-primary"></i>
-                                </span>
-                                <small class="col-6 fw-semibold fs-5 px-0 mx-0">
-                                    <%= details[i]?.no %>
-                                </small>
-                                <small class="col-3 px-0 mx-0">
-                                    <% if(details[i]?.statusCode === 'OK') { %>
-                                        <span class="badge rounded-pill text-bg-success w-100"><%= details[i]?.statusText %></span>
-                                    <% } else if(details[i]?.statusCode === 'NG') { %>
-                                        <span class="badge rounded-pill text-bg-warning w-100 text-white"><%= details[i]?.statusText %></span>
-                                    <% } else { %>
-                                        <span class="badge rounded-pill text-bg-danger w-100"><%= details[i]?.statusText %></span>
-                                    <% } %>
-                                </small>
-                                <% if(details[i]?.is_checked) { %>
-                                    <span class="bg-success-subtle mx-2 d-flex rounded-5 align-items-center justify-content-center cus">
-                                        <i class="fa-solid fa-circle-check text-success"></i>
-                                    </span>
-                                <% } %>
-                            </div>
-                        </div>
-
-                        <div class="card-body p-2">
-                            <div class="shadow p-2 border border-1 rounded-3">
-                                <div class="row fs-7 g-2 pt-2">
-                                    <div class="col-3 text-end pe-0">FA No. :</div>
-                                    <div class="col-4 px-1"><%= details[i]?.no %></div>
-                                    <div class="col-2 text-end ps-1 pe-0">ACQ. Cost :</div>
-                                    <div class="col-3 px-1"><%= details[i]?.acquisition_cost %></div>
-                                </div>
-                                <div class="row fs-7 g-2 pt-2">
-                                    <div class="col-3 text-end pe-0">FA Desc : </div>
-                                    <div class="col-4 px-1"><%= details[i]?.description %></div>
-                                    <div class="col-2 text-end ps-1 pe-0">FA Location :</div>
-                                    <div class="col-3 px-1"><%= details[i]?.fa_location_code %></div>
-                                </div>
-                                <div class="row fs-7 g-2 pt-2">
-                                    <div class="col-3 text-end pe-0">Receive Date : </div>
-                                    <div class="col-4 px-1"><%= details[i]?.acquisition_date %></div>
-                                    
-                                    <div class="col-2 text-end ps-1 pe-0">Department :</div>
-                                    <div class="col-3 px-1"><%= details[i]?.department %></div>
-                                </div>
-                                <div class="row fs-7 g-2 pt-2">
-                                    <div class="col-3 text-end pe-0">Book Val : </div>
-                                    <div class="col-4 px-1"><%= details[i]?.book_value %></div>
-                                    <div class="col-5"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <% } %>
+            <%- details %>
+            
         </div>
 
         <div class="col-12 fixed-bottom p-2 bg-light">

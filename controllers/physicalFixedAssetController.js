@@ -4,7 +4,6 @@ const { md101Companies, md102WebServices, md103Locations, wh100PhysicalFixedAsse
 const encodeUrl = require('../uitls/encodeUrl');
 const { v4: uuidv4 } = require('uuid');
 const moment = require('moment');
-const { data } = require('jquery');
 
 const getPhysFixedAsset = async (params) => {
     try {
@@ -236,6 +235,8 @@ module.exports = {
     //region getPending
     getPending: async(req, res) => {
         try {
+            let details = ``;
+
             const { physical_fa_no_id, company_id } = req.params;
 
             const arr = await wh101PhysicalFixedAssetDetail.findAll({
@@ -253,49 +254,91 @@ module.exports = {
                 throw err;
             });
 
-            const details = arr.map((item) => {
-                let statusCode = ``, statusText = ``;
+            if(arr.length > 0) {
+                for (let i = 0; i < arr.length; i++) {
+                    let statusCode = ``, badge = ``;
 
-                if(item?.status_ok === 'Yes') statusCode = `OK`;
+                    if(arr[i]?.status_ok === 'Yes') statusCode = `OK`;
 
-                if(item?.status_ng === 'Yes') statusCode = `NG`;
+                    if(arr[i]?.status_ng === 'Yes') statusCode = `NG`;
 
-                if(item?.status_loss === 'Yes') statusCode = `LOSS`;
+                    if(arr[i]?.status_loss === 'Yes') statusCode = `LOSS`;
 
-                switch(statusCode) {
-                    case 'OK':
-                        statusCode = statusText = `OK`;
-                        break;
+                    switch(statusCode) {
+                        case 'OK':
+                            badge = `<span class="badge rounded-pill text-bg-success w-100">OK</span>`
+                            break;
 
-                    case 'NG':
-                        statusCode = `NG`;
+                        case 'NG':
+                            if (arr[i]?.request_sale) {
+                                badge = `<span class="badge rounded-pill text-bg-warning w-100">NG - SALE</span>`
+                            } else {
+                                badge = `<span class="badge rounded-pill text-bg-warning w-100">NG - DONATION</span>`
+                            }
+                            break;
 
-                        if (item?.request_sale) {
-                            statusText = `NG - SALE`;
-                        } else {
-                            statusText = `NG - DONATION`;
-                        }
-                        break;
+                        case 'LOSS':
+                            badge = `<span class="badge rounded-pill text-bg-danger w-100">LOSS - WRITE OFF</span>`;
+                            break;
 
-                    case 'LOSS':
-                        statusCode = `LOSS`;
-                        statusText = `LOSS - WRITE OFF`;
-                        break;
+                        default: 
+                            badge = `<span class="badge rounded-pill text-bg-danger w-100">LOSS - WRITE OFF</span>`;
+                    };
 
-                    default: 
-                        statusCode = `LOSS`;
-                        statusText = `LOSS - WRITE OFF`;
+                    const book_value = Number(Number(arr[i]?.book_value).toFixed(2)).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const acquisition_cost = Number(Number(arr[i]?.acquisition_cost).toFixed(2)).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const acquisition_date = moment(arr[i]?.acquisition_date).format('DD/MM/YYYY');
+
+                    details += `
+                        <div class="col-12 pt-2">
+                            <div class="card rounded-3 shadow">
+                                <div class="card-header">
+                                    <div class="row align-items-center fw-semibold fs-5">
+                                        <span class="col-2 bg-primary-subtle mx-2 d-flex rounded-5 align-items-center justify-content-center cus">
+                                            <i class="fa-solid fa-file-lines text-primary"></i>
+                                        </span>
+                                        <small class="col-6 fw-semibold fs-5 px-0 mx-0">
+                                            ${arr[i]?.no}
+                                        </small>
+                                        <small class="col-3 px-0 mx-0">
+                                            ${badge}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="card-body p-2">
+                                    <div class="shadow p-2 border border-1 rounded-3">
+                                        <div class="row fs-7 g-2 pt-2">
+                                            <div class="col-3 text-end pe-0">FA No. :</div>
+                                            <div class="col-4 px-1">${arr[i]?.no}</div>
+                                            <div class="col-2 text-end ps-1 pe-0">ACQ. Cost :</div>
+                                            <div class="col-3 px-1">${acquisition_cost}</div>
+                                        </div>
+                                        <div class="row fs-7 g-2 pt-2">
+                                            <div class="col-3 text-end pe-0">FA Desc : </div>
+                                            <div class="col-4 px-1">${arr[i]?.description}</div>
+                                            <div class="col-2 text-end ps-1 pe-0">FA Location :</div>
+                                            <div class="col-3 px-1">${arr[i]?.fa_location_code}</div>
+                                        </div>
+                                        <div class="row fs-7 g-2 pt-2">
+                                            <div class="col-3 text-end pe-0">Receive Date : </div>
+                                            <div class="col-4 px-1">${acquisition_date}</div>
+                                            
+                                            <div class="col-2 text-end ps-1 pe-0">Department :</div>
+                                            <div class="col-3 px-1">${arr[i]?.department}</div>
+                                        </div>
+                                        <div class="row fs-7 g-2 pt-2">
+                                            <div class="col-3 text-end pe-0">Book Val : </div>
+                                            <div class="col-4 px-1">${book_value}</div>
+                                            <div class="col-5"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 }
-
-                return {
-                    ...item,
-                    book_value: Number(Number(item?.book_value).toFixed(2)).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-                    acquisition_cost: Number(Number(item?.acquisition_cost).toFixed(2)).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-                    acquisition_date: moment(item?.acquisition_date).format('DD/MM/YYYY'),
-                    statusCode,
-                    statusText
-                };
-            });
+            }
 
             return res.render('pages/physical-fixed-asset/pending', { 
                 title: 'Pending Fixed Asset',
@@ -763,8 +806,6 @@ module.exports = {
                     }).catch((err)=>{
                         throw err;
                     });
-
-                    console.log({ bodyTransaction: BodyTxt });
     
                     return res.status(200).json({ 
                         data: {...headset},
@@ -951,6 +992,22 @@ module.exports = {
                         }, Object.create(null));
 
                         if(unique.length > 0) {
+                            await wh100PhysicalFixedAssetHead.destroy({ 
+                                where: {
+                                    company_id: companys[i]?.uuid
+                                }
+                            }).catch((err)=>{
+                                throw err;
+                            });
+                            
+                            await wh101PhysicalFixedAssetDetail.destroy({ 
+                                where: {
+                                    company_id: companys[i]?.uuid
+                                }
+                            }).catch((err)=>{
+                                throw err;
+                            });
+
                             for (let j = 0; j < unique.length; j++) {
                                 const rows = headers[unique[j]], dataset = {}, uuid = uuidv4(`${unique[j]}${companys[i]?.uuid}`);
 

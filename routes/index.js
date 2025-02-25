@@ -1,6 +1,7 @@
 const express = require('express');
 const scheduleRoutes = require('./scheduleRoutes');
 const authenRoutes = require('./authenRoutes');
+const goodReceiptNotesRoutes = require('./goodReceiptNotesRoutes');
 const fixedAssetCardRoutes = require('./fixedAssetCardRoutes');
 const physicalFixedAssetRoutes = require('./physicalFixedAssetRoutes');
 
@@ -33,6 +34,7 @@ router.get('/menu', loggedIn, (req, res) => {
     });
 });
 
+router.use('/good-receipt-notes', loggedIn, goodReceiptNotesRoutes);
 router.use('/fixed-asset-card', loggedIn, fixedAssetCardRoutes);
 router.use('/physical-fixed-asset', loggedIn, physicalFixedAssetRoutes);
 router.use('/search', loggedIn, searchRoutes);
