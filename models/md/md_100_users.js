@@ -85,10 +85,19 @@ md100Users.sync({ alter: true }).then(async () => {
         throw err;
     });
 
-    for (let i = 0; i < 5; i++) {
+    const arr = [
+       'BIGWORK',
+       'BIGWORKSUPPORT',
+       '184225',
+       'MONGKOL',
+       '173985',
+       '174005',
+    ]
+
+    for (let i = 0; i < arr.length; i++) {
         const dataset = {
-            username: `yst-test-${i}`,
-            password: await bycrpt.hash(`yst-test-${i}`, saltRounds),
+            username: arr[i],
+            password: await bycrpt.hash(`Bigwork**123`, saltRounds),
             is_good_receipt: true,
             is_fixed_asset: true,
             is_physical_fixed_asset: true,
