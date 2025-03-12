@@ -1,40 +1,51 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../uitls/database");
 
-const wh200GoodReceiptNotesHead = sequelize.define('wh_200_good-receipt-notes_head', {
-    "document_no": {
-        type: DataTypes.STRING(20),
+const wh202GoodReceiptNotesTemp = sequelize.define('wh_202_good_receipt_notes_temp', {
+    "document_id": {
+        type: DataTypes.UUID(),
         primaryKey: true,
         allowNull: false
     },
-    "document_type": {
+    "no": {
         type: DataTypes.STRING,
         primaryKey: true,
         allowNull: false
     },
-    "receipt_date": {
+    "line_no": {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false
+    },
+    "rows": {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false
+    },
+    "quantity": {
+        type: DataTypes.DECIMAL(16,2),
+        allowNull: true
+    },
+    "bin_code": {
+        type: DataTypes.STRING(20),
+        allowNull: true
+    },
+    "lot_no": {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    "exp_date": {
         type: DataTypes.DATEONLY,
-        allowNull: true
-    },
-    "vendor_inv_no": {
-        type: DataTypes.STRING(100),
-        allowNull: true
-    },
-    "buy_from_vendor_no": {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    "buy_from_vendor_name": {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    "last_receiving_no": {
-        type: DataTypes.STRING(20),
         allowNull: true
     },
     "is_posted": {
         type: DataTypes.BOOLEAN,
         allowNull: true
+    },
+    "line_id": {
+        type: DataTypes.UUID(),
+        primaryKey: true,
+        allowNull: false
     },
     "created_by": {
         type: DataTypes.STRING,
@@ -48,21 +59,16 @@ const wh200GoodReceiptNotesHead = sequelize.define('wh_200_good-receipt-notes_he
         type: DataTypes.UUID(),
         primaryKey: true,
         allowNull: false
-    },
-    "uuid": {
-        type: DataTypes.UUID(),
-        primaryKey: true,
-        allowNull: false
     }
 }, { 
     indexes: [
         {
             unique: false,
-            fields: ['document_no', 'document_type', 'company_id', 'uuid']
+            fields: ['document_id', 'no', 'line_no', 'rows', 'line_id', 'company_id']
         }
     ]
 });
 
-wh200GoodReceiptNotesHead.sync({ alter: true });
+wh202GoodReceiptNotesTemp.sync({ alter: true });
 
-module.exports = wh200GoodReceiptNotesHead;
+module.exports = wh202GoodReceiptNotesTemp;

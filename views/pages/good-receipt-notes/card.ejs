@@ -1,0 +1,270 @@
+<%- include('../../layout/header.ejs'); %>
+
+<script>
+    $(document).ready(function () {
+        onRequired();
+    });
+
+    const onFilter = () => {
+        const eye_slash = document.getElementsByClassName("fa-eye-slash");
+        const show_pass = document.getElementById("show_pass");
+
+        if (eye_slash.length > 0) {
+            show_pass.innerHTML = '<i class="fa-solid fa-eye"></i> Show'; 
+        } else {
+            show_pass.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Hide';
+        }
+    };
+
+    const onRequired = () => {
+        let check = 0;
+
+        const quantity = $('#quantity').val() ? Number($('#quantity').val()) : null;
+        const max = $('#quantity').attr('max')
+        const lot_no = $('#lot_no').val();
+        const exp_date = $('#exp_date').val();
+        const tracking_type = '<%= result?.tracking_type %>';
+        const arr = ['LOTALL','LOTEXP']
+
+        if(quantity) {
+            if (quantity <= max) {
+                $('#quantity').removeClass('is-invalid').prop('required', false);
+            } else {
+                $('#quantity').addClass('is-invalid').prop('required', true);
+                check = check + 1;
+            }
+        } else {
+            $('#quantity').addClass('is-invalid').prop('required', true);
+            check = check + 1;
+        }
+
+        if (arr.includes(tracking_type)) {
+            if(lot_no) {
+                $('#lot_no').removeClass('is-invalid').prop('required', false);
+            } else {
+                $('#lot_no').addClass('is-invalid').prop('required', true);
+                check = check + 1;
+            }
+
+            if(tracking_type === 'LOTEXP') {
+                if (exp_date) {
+                    if (exp_date > moment().format('YYYY-MM-DD')) {
+                        $('#exp_date').removeClass('is-invalid').prop('required', false);
+                    } else {
+                        $('#exp_date').addClass('is-invalid').prop('required', true);
+                        check = check + 1;
+                    }
+                } else {
+                    $('#exp_date').addClass('is-invalid').prop('required', true);
+                    check = check + 1;
+                }
+            }
+        }
+
+        if (check === 0) {
+            $(`#btn-add`).show();
+        } else {
+            $(`#btn-add`).hide();
+        }
+    }
+
+    const onScanQRCode = () => {
+        const scan = $('#lot_no').val();
+
+        if(scan.length < 40) return onRequired();
+    }
+
+    const onSaved = () => {
+        const { document_id, company_id } = getLocalStoage();
+        const dataset = {
+            document_id,
+            company_id,
+            no: '<%= result?.no %>',
+            line_no: '<%= result?.line_no %>',
+            quantity: $('#quantity').val() ? Number($('#quantity').val()) : null,
+            lot_no: $('#lot_no').val() ? String($('#lot_no').val()).toUpperCase() : null,
+            exp_date: $('#exp_date').val() || null,
+        };
+
+        loader(true);
+
+        setTimeout(async () => {
+            await axios.post(`/good-receipt-notes/store/${dataset?.document_id}/${dataset?.company_id}/${dataset?.line_no}`, {
+                ...dataset
+            }).then(function (response) {
+                loader(false);
+                alertMessage(response.data);
+            }).catch(function (err) {
+                console.log(err.response.data);
+                alertMessage(err?.response?.data);
+            });
+        }, 500);
+    }
+
+    const onDelete = (rows) => {
+        const { document_id, company_id } = getLocalStoage();
+        const dataset = {
+            document_id,
+            company_id,
+            no: '<%= result?.no %>',
+            line_no: '<%= result?.line_no %>',
+            rows,
+        };
+        Swal.fire({
+            position: `center`,
+            icon: `question`,
+            title: `Delete`,
+            html: `Do you want to delete this item?`,
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#1649bd",
+            allowOutsideClick: false
+        }).then((result) => {
+            if(result.isConfirmed) {
+                loader(true);
+
+                setTimeout(async () => {
+                    await axios.delete(`/good-receipt-notes/delete/${dataset?.document_id}/${dataset?.company_id}/${dataset?.line_no}/${dataset?.rows}`)
+                    .then(function (response) {
+                        loader(false);
+                        alertMessage(response.data);
+                    }).catch(function (err) {
+                        console.log(err.response.data);
+                        alertMessage(err?.response?.data);
+                    });
+                }, 500);
+            }
+        });
+    }
+</script>
+
+<%- include('../../layout/navbar.ejs'); %>
+
+<div class="container py-3">
+    <div class="row justify-content-center align-items-center">
+        <h5 class="col-8 fw-semibold text-primary-emphasis pointer" role="button" 
+        onclick="window.location.href='/good-receipt-notes/list/<%= params?.document_id %>/<%= params?.company_id %>'">
+            <label class="pointer">
+                <i class="fa-solid fa-angles-left"></i> <%= title %>
+            </label>
+        </h5>
+
+        <div class="col-4 text-end">
+            <a class="btn btn-sm fw-semibold" id="show_pass" role="button" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters" onclick="onFilter()">
+                <i class="fa-solid fa-eye-slash"></i> Hide
+            </a>
+        </div>
+
+        <div class="col-12 py-3">
+            <div class="row g-2">
+                <!-- Item No. -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="no" value="<%= result?.no %>" disabled>
+                        <label for="no">
+                            Item No. (<%= result?.uom %>)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Location Code -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="location_code" value="<%= result?.location_code %>" disabled>
+                        <label for="no">
+                            Location Code
+                        </label>
+                    </div>
+                </div>
+
+                <div class="collapse show" id="filters">
+                    <div class="row g-2">
+                        <!-- Quantity -->
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control text-end" id="txt_qty" value="<%= result?.txt_qty %>" disabled>
+                                <label for="txt_qty">
+                                    Quantity
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Scan Quantity -->
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control text-end" id="txt_scan" value="<%= result?.txt_scan %>" disabled>
+                                <label for="txt_scan">
+                                    Scan Quantity
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Remaining -->
+                        <div class="col-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control text-end" id="txt_out_standing" value="<%= result?.txt_out_standing %>" disabled>
+                                <label for="txt_out_standing">
+                                    Remaining
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <% if(result?.remaining !== 0) { %>
+                    <!-- Quantity. -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="number" class="form-control text-end is-invalid" id="quantity" value="<%= result?.remaining %>" 
+                            step="1" min="0" max="<%= result?.remaining %>" required autofocus onchange="onRequired()">
+                            <label for="quantity">
+                                Quantity.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- LOT No. -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control is-invalid text-uppercase" id="lot_no" value="<%= result?.lot_format %>" required autofocus onchange="onScanQRCode()">
+                            <label for="lot_no">
+                                LOT No.
+                                <label class="clickable-icon ms-2">
+                                    <i class="fa-solid fa-qrcode clickable-icon"></i>
+                                </label>
+                            </label>
+                        </div>
+                    </div>
+
+                    <% if(result.require_exp_date) { %>
+                        <!-- Expiration Date -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="date" class="form-control is-invalid" id="exp_date" required autofocus onchange="onRequired()">
+                                <label for="exp_date">
+                                    Expiration Date
+                                </label>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- Button Access -->
+                    <div class="col-12">
+                        <a class="btn btn-primary btn-sm rounded-3 px-4 w-100" id="btn-add" onclick="onSaved()">
+                            <i class="fa-solid fa-circle-plus"></i> Add
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="col-12 pb-5">
+            <div class="row gy-3" id="details">
+                <%- details %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../../layout/footer'); %>

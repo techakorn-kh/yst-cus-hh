@@ -1,8 +1,42 @@
 <script>
     $(document).ready(function () {
-        getLocalStoage();
+        onPermissions(getLocalStoage());
         refreshToken();
     });
+
+    const onUsersManagement = () => {
+       
+    };
+
+    const onPermissions = (params) => {
+        const { 
+            is_fixed_asset, is_good_receipt, is_physical_fixed_asset, is_users_management
+        } = params;
+
+        if (is_fixed_asset === 'true') {
+            $('#fixed_asset_card').show();
+        } else {
+            $('#fixed_asset_card').hide();
+        }
+
+        if (is_good_receipt === 'true') {
+            $('#good_receipt_notes').show();
+        } else {
+            $('#good_receipt_notes').hide();
+        }
+
+        if (is_physical_fixed_asset === 'true') {
+            $('#physical_fixed_asset').show();
+        } else {
+            $('#physical_fixed_asset').hide();
+        }
+
+        if (is_users_management === 'true') {
+            $('#users_management').show();
+        } else {
+            $('#users_management').hide();
+        }
+    }
 
     const onSignOut = () => {
         Swal.fire({
@@ -19,7 +53,7 @@
                 removeLocalStoage();
             }
         });
-    } 
+    };
 </script>
 
 <div class="row justify-content-between sticky-top p-2 bg-light shadow align-items-center" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -36,13 +70,23 @@
 </div>
 
 <div class="collapse shadow" id="collapseExample">
-    <div class="col-12 p-3">
-        <button type="button" class="button btn-block w-100" onclick="onSignOut()">
-            <span class="button__icon">
-                <i class="fa-solid fa-right-from-bracket fa-lg"></i>
-            </span>
-            <span class="button__text font-weight-bold">Logout</span>
-        </button>
+    <div class="row p-3 g-2">
+        <div class="col-12" id="users_management">
+            <button type="button" class="button btn-block w-100" onclick="window.location.href='/users-management'">
+                <span class="button__icon">
+                    <i class="fa-solid fa-users-gear fa-lg"></i>
+                </span>
+                <span class="button__text font-weight-bold">Users management</span>
+            </button>
+        </div>
+        <div class="col-12">
+            <button type="button" class="button btn-block w-100" onclick="onSignOut()">
+                <span class="button__icon">
+                    <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+                </span>
+                <span class="button__text font-weight-bold">Logout</span>
+            </button>
+        </div>
     </div>
 </div>
 

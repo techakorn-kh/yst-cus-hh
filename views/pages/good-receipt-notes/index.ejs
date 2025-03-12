@@ -1,18 +1,68 @@
 <%- include('../../layout/header.ejs'); %>
 
 <script>
-    
+    const onRequired = () => {
+        if ($('#document_no').val()) {
+            $('#document_no').removeClass('is-invalid').prop('required', false);
+        } else {
+            $('#document_no').addClass('is-invalid').prop('required', true);
+        }
+    };
+
+    const onGoodReceiptNotes = async () => {
+        onRequired();
+
+        const document_no = $('#document_no').val(), { company_id } = getLocalStoage();
+
+        if(document_no) {
+            loader(true);
+            await axios.get(`/good-receipt-notes/download/${document_no}/${company_id}`)
+            .then(function (response) {
+                const data = response.data;
+
+                setLocalStoage({
+                    ...getLocalStoage(),
+                    document_no: data?.document_no,
+                    document_id: data?.uuid
+                });
+
+                const { document_id, company_id } = getLocalStoage();
+
+                setTimeout(() => {
+                    window.location.href=`/good-receipt-notes/list/${document_id}/${company_id}`;
+                }, 1500);
+            }).catch(function (err) {
+                alertMessage(err?.response?.data);
+            });
+        }
+    }
 </script>
 
 <%- include('../../layout/navbar.ejs'); %>
 
 <div class="container py-3">
     <div class="row justify-content-center align-items-center">
-        <h5 class="col-12 font-semibold text-primary-emphasis" role="button" onclick="window.location.href='/search/page/good-receipt-notes'">
-            <label>
+        <h5 class="col-12 font-semibold text-primary-emphasis pointer" role="button" onclick="window.location.href='/search/page/good-receipt-notes'">
+            <label class="pointer">
                 <i class="fa-solid fa-angles-left"></i> <%= title %>
             </label>
         </h5>
+        <div class="col-12 py-3">
+            <div class="row g-3">
+                <!-- Purchase Order No. -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="search" class="form-control is-invalid" id="document_no" placeholder="Purchase Order No." autofocus autocomplete="off" required onsearch="onGoodReceiptNotes()" onchange="onRequired()">
+                        <label for="document_no">
+                            Purchase Order No.
+                            <label class="clickable-icon ms-2">
+                                <i class="fa-solid fa-qrcode clickable-icon"></i>
+                            </label>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

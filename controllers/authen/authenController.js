@@ -59,6 +59,7 @@ module.exports = {
                     is_good_receipt: result?.is_good_receipt ?? false,
                     is_fixed_asset: result?.is_fixed_asset ?? false,
                     is_physical_fixed_asset: result?.is_physical_fixed_asset ?? false,
+                    is_users_management: result?.is_users_management ?? false,
                     company: company?.name,
                     company_id: company?.uuid
                     
@@ -85,6 +86,7 @@ module.exports = {
                     is_good_receipt: result?.is_good_receipt ?? false,
                     is_fixed_asset: result?.is_fixed_asset ?? false,
                     is_physical_fixed_asset: result?.is_physical_fixed_asset ?? false,
+                    is_users_management: result?.is_users_management ?? false,
                     company: company?.name,
                     company_id: company?.uuid,
                     token: token
@@ -130,6 +132,7 @@ module.exports = {
                     is_good_receipt: result?.is_good_receipt ?? false,
                     is_fixed_asset: result?.is_fixed_asset ?? false,
                     is_physical_fixed_asset: result?.is_physical_fixed_asset ?? false,
+                    is_users_management: result?.is_users_management ?? false,
                     company: company?.name,
                     company_id: company?.uuid
                     
@@ -146,6 +149,7 @@ module.exports = {
                 is_good_receipt: result?.is_good_receipt ?? false,
                 is_fixed_asset: result?.is_fixed_asset ?? false,
                 is_physical_fixed_asset: result?.is_physical_fixed_asset ?? false,
+                is_users_management: result?.is_users_management ?? false,
                 company: company?.name,
                 company_id: company?.uuid,
                 token: refresh

@@ -12,7 +12,7 @@
 <%- include('./layout/navbar.ejs'); %>
 <div class="container py-4">
     <div class="row justify-content-center g-3">
-        <div class="col-12">
+        <div class="col-12" id="good_receipt_notes">
             <button type="button" class="button btn-block w-100" onclick="window.location.href='/search/page/good-receipt-notes'">
                 <span class="button__icon">
                     <i class="fa-solid fa-cart-arrow-down fa-lg"></i>
@@ -20,7 +20,7 @@
                 <span class="button__text font-weight-bold">Good Receipt Notes</span>
             </button>
         </div>
-        <div class="col-12">
+        <div class="col-12" id="fixed_asset_card">
             <button type="button" class="button btn-block w-100" onclick="window.location.href='/fixed-asset-card'">
                 <span class="button__icon">
                     <i class="fa-solid fa-qrcode fa-lg"></i>
@@ -28,7 +28,7 @@
                 <span class="button__text font-weight-bold">Fixed Asset Card</span>
             </button>
         </div>
-        <div class="col-12">
+        <div class="col-12" id="physical_fixed_asset">
             <button type="button" class="button btn-block w-100" onclick="window.location.href='/search/page/physical-fixed-asset'">
                 <span class="button__icon">
                     <i class="fa-solid fa-list-check fa-lg"></i>

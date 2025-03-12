@@ -39,6 +39,10 @@ const md100Users = sequelize.define('md_100_users', {
         type: DataTypes.BOOLEAN,
         allowNull: true
     },
+    "is_users_management": {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
+    },
     "uuid": {
         type: DataTypes.UUID(),
         primaryKey: true,
@@ -72,6 +76,7 @@ md100Users.sync({ alter: true }).then(async () => {
             is_good_receipt: true,
             is_fixed_asset: true,
             is_physical_fixed_asset: true,
+            is_users_management: true,
             uuid: uuidv4(),
             created_by: 'system',
             updated_by: 'system'

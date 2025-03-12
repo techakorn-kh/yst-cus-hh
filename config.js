@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const config = {
-    APP_TYPE: process.env.APP_TYPE || 'develop',
+    APP_TYPE: process.env.APP_TYPE || 'DEVELOP',
     APP_PORT: process.env.APP_PORT || 5500,
 
     TOKEN_KEY: process.env.TOKEN_KEY || '1aB3cD5eF7',

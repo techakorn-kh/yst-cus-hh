@@ -1,0 +1,131 @@
+<%- include('../../layout/header.ejs'); %>
+
+<script>
+    const onAddUser = () => {
+    }
+
+    const onUpdate = (id) => {
+        const is_good_receipt = $(`#is_good_receipt${id}:checked`).val() ? true : false;
+        const is_fixed_asset = $(`#is_fixed_asset${id}:checked`).val() ? true : false;
+        const is_physical_fixed_asset = $(`#is_physical_fixed_asset${id}:checked`).val() ? true : false;
+        const is_users_management = $(`#is_users_management${id}:checked`).val() ? true : false;
+
+        const dataset = {
+            is_good_receipt,
+            is_fixed_asset,
+            is_physical_fixed_asset,
+            is_users_management
+        }
+
+        console.log(dataset);
+    }
+</script>
+
+<%- include('../../layout/navbar.ejs'); %>
+
+<div class="container py-3">
+    <div class="row justify-content-center align-items-center">
+        <h5 class="col-12 font-semibold text-primary-emphasis" role="button" onclick="window.location.href='/menu'">
+            <label>
+                <i class="fa-solid fa-angles-left"></i> <%= title %>
+            </label>
+        </h5>
+
+        <div class="col-12 py-3">
+            <table class="table table-striped table-hover shadow rounded-3" style="overflow: hidden;">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">No.</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(arr.length > 0) { %>
+                        <% for(let i = 0; i < arr.length; i++) { %>
+                            <tr>
+                                <td class="text-center align-middle" scope="row"><%= i+1 %></td>
+                                <td class="align-middle"><%= arr[i]?.username%></td>
+                                <td class="text-center align-middle">
+                                    <button class="btn btn-sm rounded-circle" data-bs-toggle="modal" data-bs-target="#exampleModal<%= i+1 %>">
+                                        <i class="fa-solid fa-ellipsis fa-lg"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal<%= i+1 %>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModal<%= i+1 %>Label" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModal<%= i+1 %>Label">Edit - <%= arr[i]?.username%></h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="window.location.reload()"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row g-3">
+                                                <!-- Modules -->
+                                                <div class="col-12">
+                                                    <label class="w-100 border-bottom fw-semibold mb-2">
+                                                        Modules
+                                                    </label>
+
+                                                    <!-- Good Receipt Notes -->
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="is_good_receipt<%= arr[i]?.uuid %>" 
+                                                        <%= arr[i]?.is_good_receipt ? 'checked' : '' %>>
+                                                        <label class="form-check-label" for="is_good_receipt<%= arr[i]?.uuid %>">Good Receipt Notes</label>
+                                                    </div>
+
+                                                    <!-- Fixed Asset Card -->
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="is_fixed_asset<%= arr[i]?.uuid %>"
+                                                        <%= arr[i]?.is_fixed_asset ? 'checked' : '' %>>
+                                                        <label class="form-check-label" for="is_fixed_asset<%= arr[i]?.uuid %>">Fixed Asset Card</label>
+                                                    </div>
+
+                                                    <!-- Phys. Fixed Asset -->
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="is_physical_fixed_asset<%= arr[i]?.uuid %>"
+                                                        <%= arr[i]?.is_physical_fixed_asset ? 'checked' : '' %>>
+                                                        <label class="form-check-label" for="is_physical_fixed_asset<%= arr[i]?.uuid %>">Phys. Fixed Asset</label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Administrator -->
+                                                <div class="col-12">
+                                                    <label class="w-100 border-bottom fw-semibold mb-2">
+                                                        Administrator
+                                                    </label>
+
+                                                    <!-- Users Management -->
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="is_users_management<%= arr[i]?.uuid %>" 
+                                                        <%= arr[i]?.is_users_management ? 'checked' : '' %>>
+                                                        <label class="form-check-label" for="is_users_management<%= arr[i]?.uuid %>">Users Management</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-sm btn-primary w-100" onclick="onUpdate('<%= arr[i]?.uuid %>')">
+                                                <i class="fa-solid fa-pen-to-square"></i> Update
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="col-12 fixed-bottom py-2 bg-light shadow">
+            <button class="btn btn-sm btn-primary rounded-3 w-100" onclick="onAddUser()">
+                <i class="fa-solid fa-plus-circle"></i> Add User
+            </button>
+        </div>
+    </div>
+</div>
+
+<%- include('../../layout/footer'); %>

@@ -5,11 +5,15 @@ const setLocalStoage = (params) => {
     localStorage.setItem("is_fixed_asset", params?.is_fixed_asset ?? null);
     localStorage.setItem("is_good_receipt", params?.is_good_receipt ?? null);
     localStorage.setItem("is_physical_fixed_asset", params?.is_physical_fixed_asset ?? null);
+    localStorage.setItem("is_users_management", params?.is_users_management ?? null);
     localStorage.setItem("token", params?.token ?? null);
 
     if(params?.fixed_asset_no) localStorage.setItem("fixed_asset_no", params?.fixed_asset_no ?? null);
     if(params?.physical_fa_no) localStorage.setItem("physical_fa_no", params?.physical_fa_no ?? null);
     if(params?.physical_fa_no_id) localStorage.setItem("physical_fa_no_id", params?.physical_fa_no_id ?? null);
+
+    if(params?.document_no) localStorage.setItem("document_no", params?.document_no ?? null);
+    if(params?.document_id) localStorage.setItem("document_id", params?.document_id ?? null);
 }
 
 const getLocalStoage = () => {
@@ -19,18 +23,25 @@ const getLocalStoage = () => {
     const is_fixed_asset = localStorage.getItem("is_fixed_asset");
     const is_good_receipt = localStorage.getItem("is_good_receipt");
     const is_physical_fixed_asset = localStorage.getItem("is_physical_fixed_asset");
+    const is_users_management = localStorage.getItem("is_users_management");
     const token = localStorage.getItem("token");
 
     const fixed_asset_no = localStorage.getItem("fixed_asset_no");
     const physical_fa_no = localStorage.getItem("physical_fa_no");
     const physical_fa_no_id = localStorage.getItem("physical_fa_no_id");
 
+    const document_no = localStorage.getItem("document_no");
+    const document_id = localStorage.getItem("document_id");
+
     if(!token) alertMessage({ status: `error`, message: `Invalid token. Please log in again!`, backward: `/login` });
 
     $('#is_username').text(username);
     $('#is_company').text(`${company}`);
 
-    return { username, company, company_id, is_fixed_asset, is_good_receipt, is_physical_fixed_asset, token, fixed_asset_no, physical_fa_no, physical_fa_no_id };
+    return { 
+        username, company, company_id, is_fixed_asset, is_good_receipt, is_physical_fixed_asset, is_users_management, 
+        token, fixed_asset_no, physical_fa_no, physical_fa_no_id, document_no, document_id
+    };
 }
 
 const removeLocalStoage = () => {
@@ -40,22 +51,25 @@ const removeLocalStoage = () => {
     localStorage.removeItem("is_fixed_asset");
     localStorage.removeItem("is_good_receipt");
     localStorage.removeItem("is_physical_fixed_asset");
+    localStorage.removeItem("is_users_management");
     localStorage.removeItem("token");
     localStorage.removeItem("fixed_asset_no");
     localStorage.removeItem("physical_fa_no");
     localStorage.removeItem("physical_fa_no_id");
+    localStorage.removeItem("document_no");
+    localStorage.removeItem("document_id");
 
     window.location.href=`/login`;
 }
 
 const refreshToken = async () => {
-    // const { token } = getLocalStoage();
+    const { token } = getLocalStoage();
 
-    // await axios.post('/login/refresh-token', {
-    //     token
-    // }).then(function (response) {
-    //     setLocalStoage(response.data); 
-    // }).catch(function (error) {
-    //     alertMessage(error.response.data);
-    // });
+    await axios.post('/login/refresh-token', {
+        token
+    }).then(function (response) {
+        setLocalStoage(response.data); 
+    }).catch(function (error) {
+        alertMessage(error.response.data);
+    });
 }

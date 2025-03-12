@@ -4,6 +4,7 @@ const authenRoutes = require('./authenRoutes');
 const goodReceiptNotesRoutes = require('./goodReceiptNotesRoutes');
 const fixedAssetCardRoutes = require('./fixedAssetCardRoutes');
 const physicalFixedAssetRoutes = require('./physicalFixedAssetRoutes');
+const usersManagementRoutes = require('./usersManagementRoutes');
 
 const searchRoutes = require('./searchRoutes');
 const apiRoutes = require('./api');
@@ -34,6 +35,7 @@ router.get('/menu', loggedIn, (req, res) => {
     });
 });
 
+router.use('/users-management', loggedIn, usersManagementRoutes);
 router.use('/good-receipt-notes', loggedIn, goodReceiptNotesRoutes);
 router.use('/fixed-asset-card', loggedIn, fixedAssetCardRoutes);
 router.use('/physical-fixed-asset', loggedIn, physicalFixedAssetRoutes);

@@ -85,12 +85,17 @@ const wh201GoodReceiptNotesDetail = sequelize.define('wh_201_good_receipt_notes_
         type: DataTypes.UUID(),
         primaryKey: true,
         allowNull: false
+    },
+    "uuid": {
+        type: DataTypes.UUID(),
+        primaryKey: true,
+        allowNull: false
     }
 }, { 
     indexes: [
         {
             unique: false,
-            fields: ['document_id', 'no', 'line_no', 'company_id']
+            fields: ['document_id', 'no', 'line_no', 'company_id', 'uuid']
         }
     ]
 });

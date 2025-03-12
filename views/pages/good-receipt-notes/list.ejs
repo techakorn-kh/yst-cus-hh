@@ -1,0 +1,243 @@
+<%- include('../../layout/header.ejs'); %>
+
+<script>
+    $(document).ready(function () {
+        setLocalStoage({
+            ...getLocalStoage(),
+            document_id: '<%= header?.uuid %>',
+            document_no: '<%= header?.document_no %>'
+        });
+
+        const is_posted = '<%= header?.is_posted %>' === 'true' ? true : false;
+
+        if (is_posted) {
+            $(`input`).prop('disabled', true);
+        } else {
+            onRequired();
+        }        
+    });
+
+    const onRequired = () => {
+        let check = 0;
+
+        if ($('#receipt_date').val()) {
+            $('#receipt_date').removeClass('is-invalid').prop('required', false);
+        } else {
+            $('#receipt_date').addClass('is-invalid').prop('required', true);
+            check = check + 1;
+        }
+
+        if ($('#vendor_inv_no').val()) {
+            $('#vendor_inv_no').removeClass('is-invalid').prop('required', false);
+        } else {
+            $('#vendor_inv_no').addClass('is-invalid').prop('required', true);
+            check = check + 1;
+        }
+
+        if (check === 0) {
+            $(`#btn-posted`).show();
+        } else {
+            $(`#btn-posted`).hide();
+        }
+    }
+
+    const onFilter = () => {
+        const eye_slash = document.getElementsByClassName("fa-eye-slash");
+        const show_pass = document.getElementById("show_pass");
+
+        if (eye_slash.length > 0) {
+            show_pass.innerHTML = '<i class="fa-solid fa-eye"></i> Show'; 
+        } else {
+            show_pass.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Hide';
+        }
+    };
+
+    const onHadndle = async () => {
+        onRequired();
+
+        const { document_id, company_id } = getLocalStoage();
+
+        loader(true);
+
+        setTimeout(async () => {
+            await axios.put(`/good-receipt-notes/update-header/${document_id}/${company_id}`, {
+                receipt_date: $(`#receipt_date`).val() || null,
+                vendor_inv_no: $(`#vendor_inv_no`).val() || null
+            }).then(function (response) {
+                alertMessage(response.data);
+            }).catch(function (error) {
+                console.log(error.response.data);
+                alertMessage(err?.response?.data);
+            });
+        }, 500);
+    }
+
+    const onSearch = () => {
+        const { document_id, company_id } = getLocalStoage();    
+
+        loader(true);
+
+        if ($(`#no`).val()) {
+            setTimeout(async () => {
+                await axios.post(`/good-receipt-notes/search/${document_id}/${company_id}`, {
+                    no: $(`#no`).val() || null
+                }).then(function (response) {
+                    loader(false);
+
+                    const { details } = response.data;
+
+                    const tag_id = document.getElementById("details");
+                    tag_id.innerHTML = details;                     
+                }).catch(function (error) {
+                    console.log(error.response.data);
+                    alertMessage(err?.response?.data);
+                });
+            }, 500);
+        } else {
+            setTimeout(async () => {
+                window.location.href=`/good-receipt-notes/list/${document_id}/${company_id}`;
+            }, 500);
+        }
+        
+    }
+
+    const onTrackingLines = async (line_no) => {
+        const { document_id, company_id } = getLocalStoage();    
+       
+        loader(true);
+        
+        setTimeout(async () => {
+            window.location.href=`/good-receipt-notes/card/${document_id}/${company_id}/${line_no}`;
+        }, 500);
+    }
+
+    const onPosted = () => {
+        const { document_id, company_id } = getLocalStoage();
+
+        loader(true);
+
+        setTimeout(async () => {
+            await axios.post(`/good-receipt-notes/posted/${document_id}/${company_id}`)
+            .then(function (response) {
+                console.log(response.data);
+                alertMessage(response?.data);        
+            }).catch(function (err) {
+                console.log(err.response.data);
+                alertMessage(err?.response?.data);
+            });
+        }, 500);
+    }
+</script>
+
+<%- include('../../layout/navbar.ejs'); %>
+
+<div class="container py-3">
+    <div class="row justify-content-center align-items-center">
+        <h5 class="col-8 fw-semibold text-primary-emphasis" role="button" onclick="window.location.href='/search/page/good-receipt-notes'">
+            <label class="pointer">
+                <i class="fa-solid fa-angles-left"></i> <%= title %>
+            </label>
+        </h5>
+
+        <div class="col-4 text-end">
+            <a class="btn btn-sm fw-semibold" id="show_pass" role="button" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters" onclick="onFilter()">
+                <i class="fa-solid fa-eye-slash"></i> Hide
+            </a>
+        </div>
+
+        <div class="col-12 py-3">
+            <div class="row g-2">
+                <!-- Purchase Order No. -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="document_no" value="<%= header?.document_no %>" disabled>
+                        <label for="document_no">
+                            Purchase Order No.
+                        </label>
+                    </div>
+                </div>
+
+                <div class="collapse show" id="filters">
+                    <div class="row g-2">
+                        <!-- Buy From Vendor No. -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="buy_from_vendor_no" value="<%= header?.buy_from_vendor_no %>" disabled>
+                                <label for="buy_from_vendor_no">
+                                    Buy From Vendor No.
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Buy From Vendor Name -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="buy_from_vendor_name" value="<%= header?.buy_from_vendor_name %>" disabled>
+                                <label for="buy_from_vendor_name">
+                                    Buy From Vendor Name
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Last Receiving No. -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="last_receiving_no" value="<%= header?.buy_from_vendor_name %>" disabled>
+                                <label for="last_receiving_no">
+                                    Last Receiving No.
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Receive Date -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="receipt_date" value="<%= header?.receipt_date || moment().format('YYYY-MM-DD') %>" onchange="onHadndle()">
+                                <label for="receipt_date">
+                                    Receive Date
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Vendor Invoice No. -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="vendor_inv_no" value="<%= header?.vendor_inv_no %>" onchange="onHadndle()">
+                                <label for="vendor_inv_no">
+                                    Vendor Invoice No.
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Item No. -->
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="search" class="form-control" id="no" placeholder="Filter Item No." autofocus autocomplete="off" onsearch="onSearch()">
+                        <label for="no">
+                            Filter Item No.
+                            <label class="clickable-icon ms-2">
+                                <i class="fa-solid fa-qrcode clickable-icon"></i>
+                            </label>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 py-3 pb-5 mb-5">
+            <div class="row gy-3" id="details">
+                <%- details %>
+            </div>
+        </div>
+
+        <div class="col-12 fixed-bottom p-2 bg-light" id="btn-posted">
+            <button class="btn btn-primary rounded-3 w-100 shadow" onclick="onPosted()">
+                <i class="fa-solid fa-paper-plane"></i> Posted
+            </button>
+        </div>
+    </div>
+</div>
+
+<%- include('../../layout/footer'); %>

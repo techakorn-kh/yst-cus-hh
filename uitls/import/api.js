@@ -22,6 +22,14 @@ const navArr = [
     {
         api_name: `GetAPIGoodReceiptNotes`,
         api_link: `http://192.168.2.102:2304/YST_Dev/ODataV4/Company(#-company-#)/GetAPIGoodReceiptNotes`
+    },
+    {
+        api_name: `HandheldEntry`,
+        api_link: `http://192.168.2.102:2304/YST_Dev/ODataV4/Company(#-company-#)/HandheldEntry`
+    },
+    {
+        api_name: `PostTransaction`,
+        api_link: `http://192.168.2.102:2304/YST_Dev/ODataV4/Company(#-company-#)/PostTransaction`
     }
 ];
 

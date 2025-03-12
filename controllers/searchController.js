@@ -35,7 +35,7 @@ module.exports = {
 
                     const arrA = await wh200GoodReceiptNotesHead.findAll({
                         attributes: ['document_no','updated_by','uuid','company_id'],
-                        where: filters(filter, { company_id }),
+                        where: filters(filter, { company_id, is_posted: false }),
                         raw: true
                     }).catch((err)=>{
                         throw err;

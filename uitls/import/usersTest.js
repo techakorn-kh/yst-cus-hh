@@ -9,6 +9,7 @@ const usersArr = [
         is_good_receipt: true,
         is_fixed_asset: true,
         is_physical_fixed_asset: true,
+        is_users_management: false,
         uuid: uuidv4(),
         created_by: 'system',
         updated_by: 'system'
