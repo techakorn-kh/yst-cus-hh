@@ -1,6 +1,8 @@
 <%- include('../../layout/header.ejs'); %>
 
 <script>
+    const arr = ['NG', 'LOSS'];
+
     $(document).ready(function () {
         setLocalStoage({
             ...getLocalStoage(),
@@ -24,9 +26,32 @@
         }
     }
 
+    const onRequired = (line) => {
+        const remark = $(`#remark${line}`).val(), type = $(`input[name="statusRadio${line}"]:checked`).val();
+
+        console.log(remark);
+        console.log(arr.includes(type));
+        console.log(line);
+
+        if (arr.includes(type)) {
+            if (remark) {
+                $(`#remark${line}`).prop('required', false).removeClass('is-invalid');
+                $(`#btn-saved${line}`).show();
+            } else {
+                $(`#remark${line}`).prop('required', true).addClass('is-invalid');
+                $(`#btn-saved${line}`).hide();
+            }
+        } else {
+            $(`#remark${line}`).prop('required', false).removeClass('is-invalid');
+            $(`#btn-saved${line}`).show();
+        }
+    }
+
     const onModal = async (id, no, line_no) => {
         const { physical_fa_no_id, company_id } = getLocalStoage();
 
+        onRequired(line_no);
+        
         await axios.get(`/physical-fixed-asset/check-action/${physical_fa_no_id}/${company_id}/${no}/${line_no}`)
         .then(function (response) {
             const { is_checked, updated_by, updatedAt } = response.data;
@@ -55,14 +80,15 @@
                     }
                 });
             }
-        }).catch(function (error) {
-            console.log(error.response.data);
+        }).catch(function (err) {
+            console.log(err?.response?.data);
             alertMessage(err?.response?.data);
         });
     }
 
     const onStatusChecked = (line) => {
         const type = $(`input[name="statusRadio${line}"]:checked`).val();
+        $(`#remark${line}`).val(null)
 
         switch(type) {
             case 'OK':
@@ -93,14 +119,16 @@
                 `);
                 break;
         }
+
+        onRequired(line);
     }
 
     const onSaved = async (no, line_no) => {
-        const status = $(`input[name="statusRadio${line_no}"]:checked`).val(),
-        subStatus = $(`input[name="subStatusRadio${line_no}"]:checked`).val(),
-        remark = $(`#remark${line_no}`).val(),
-        asset_location = $(`#asset_location${line_no}`).val(),
-        { physical_fa_no_id, company_id } = getLocalStoage();
+        const status = $(`input[name="statusRadio${line_no}"]:checked`).val();
+        const subStatus = $(`input[name="subStatusRadio${line_no}"]:checked`).val();
+        const remark = $(`#remark${line_no}`).val();
+        const asset_location = $(`#asset_location${line_no}`).val();
+        const { physical_fa_no_id, company_id } = getLocalStoage();
 
         const dataset = {
             status_ok: 'No',
@@ -109,7 +137,7 @@
             request_sale: false,
             request_donation: false,
             request_write_off: false,
-            remark,
+            // remark,
             asset_location
         }
 
@@ -147,8 +175,8 @@
             await axios.put(`/physical-fixed-asset/update/${physical_fa_no_id}/${company_id}/${no}/${line_no}`, dataset)
             .then(function (response) {
                 alertMessage(response.data);
-            }).catch(function (error) {
-                console.log(error.response.data);
+            }).catch(function (err) {
+                console.log(err?.response?.data);
                 alertMessage(err?.response?.data);
             });
         }, 500);
@@ -362,7 +390,14 @@
                                         <!-- Remark -->
                                         <div class="col-12">
                                             <div class="form-floating">
-                                                <textarea class="form-control" id="remark<%= details[i]?.line_no %>" autocomplete="off" maxlength="100"><%= details[i]?.remark %></textarea>
+                                                <textarea 
+                                                    class="form-control <%= details[i]?.statusCode === 'OK' ? '' : 'is-invalid'  %>" 
+                                                    id="remark<%= details[i]?.line_no %>" 
+                                                    autocomplete="off" 
+                                                    maxlength="100" 
+                                                    onchange="onRequired('<%= details[i]?.line_no %>')" 
+                                                    <%= details[i]?.statusCode === 'OK' ? '' : 'required'  %>
+                                                ><%= details[i]?.remark %></textarea>
                                                 <label for="remark">Remark</label>
                                             </div>
                                         </div>
@@ -376,7 +411,7 @@
                                         </div>
                                         
                                         <div class="col-12 text-end">
-                                            <button type="button" class="btn btn-success btn-sm rounded-3 px-4 fs-5" 
+                                            <button type="button" class="btn btn-success btn-sm rounded-3 px-4 fs-5" id="btn-saved<%= details[i]?.line_no %>"
                                             onclick="onSaved('<%= details[i]?.no %>','<%= details[i]?.line_no %>')">
                                                 <i class="fa-solid fa-floppy-disk"></i> Save
                                             </button>

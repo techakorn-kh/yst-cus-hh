@@ -806,7 +806,8 @@ module.exports = {
                             document_id, 
                             company_id,
                             no: details[i]?.no,
-                            line_no: details[i]?.line_no
+                            line_no: details[i]?.line_no,
+                            is_posted: false
                         },
                         raw: true
                     });

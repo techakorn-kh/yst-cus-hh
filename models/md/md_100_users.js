@@ -66,55 +66,55 @@ const md100Users = sequelize.define('md_100_users', {
 });
 
 md100Users.sync({ alter: true }).then(async () => {
-    await md100Users.findOrCreate({
-        where: {
-            username: 'Administrator'
-        },
-        defaults: {
-            username: 'Administrator',
-            password: await bycrpt.hash(`Bigwork**123`, saltRounds),
-            is_good_receipt: true,
-            is_fixed_asset: true,
-            is_physical_fixed_asset: true,
-            is_users_management: true,
-            uuid: uuidv4(),
-            created_by: 'system',
-            updated_by: 'system'
-        },
-    }).catch((err) => {
-        throw err;
-    });
+    // await md100Users.findOrCreate({
+    //     where: {
+    //         username: 'Administrator'
+    //     },
+    //     defaults: {
+    //         username: 'Administrator',
+    //         password: await bycrpt.hash(`Bigwork**123`, saltRounds),
+    //         is_good_receipt: true,
+    //         is_fixed_asset: true,
+    //         is_physical_fixed_asset: true,
+    //         is_users_management: true,
+    //         uuid: uuidv4(),
+    //         created_by: 'system',
+    //         updated_by: 'system'
+    //     },
+    // }).catch((err) => {
+    //     throw err;
+    // });
 
-    const arr = [
-       'BIGWORK',
-       'BIGWORKSUPPORT',
-       '184225',
-       'MONGKOL',
-       '173985',
-       '174005',
-    ]
+    // const arr = [
+    //    'BIGWORK',
+    //    'BIGWORKSUPPORT',
+    //    '184225',
+    //    'MONGKOL',
+    //    '173985',
+    //    '174005',
+    // ]
 
-    for (let i = 0; i < arr.length; i++) {
-        const dataset = {
-            username: arr[i],
-            password: await bycrpt.hash(`Bigwork**123`, saltRounds),
-            is_good_receipt: true,
-            is_fixed_asset: true,
-            is_physical_fixed_asset: true,
-            uuid: uuidv4(),
-            created_by: 'system',
-            updated_by: 'system'
-        };
+    // for (let i = 0; i < arr.length; i++) {
+    //     const dataset = {
+    //         username: arr[i],
+    //         password: await bycrpt.hash(`Bigwork**123`, saltRounds),
+    //         is_good_receipt: true,
+    //         is_fixed_asset: true,
+    //         is_physical_fixed_asset: true,
+    //         uuid: uuidv4(),
+    //         created_by: 'system',
+    //         updated_by: 'system'
+    //     };
 
-        await md100Users.findOrCreate({
-            where: {
-                username: dataset?.username
-            },
-            defaults: dataset
-        }).catch((err) => {
-            throw err;
-        });
-    }
+    //     await md100Users.findOrCreate({
+    //         where: {
+    //             username: dataset?.username
+    //         },
+    //         defaults: dataset
+    //     }).catch((err) => {
+    //         throw err;
+    //     });
+    // }
 });
 
 module.exports = md100Users;

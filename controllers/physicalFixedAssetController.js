@@ -540,7 +540,11 @@ module.exports = {
     //region update
     update: async(req, res) => {
         try {
-            const { physical_fa_no_id, company_id, no, line_no } = req.params, { user } = req.session;
+            const { physical_fa_no_id, company_id, no, line_no } = req.params, { user } = req.session, { status_ng, status_loss, remark  } = req.body;
+
+            if(status_ng === 'Yes' || status_loss === 'Yes') {
+                if(!remark) throw `Please specify a note whenever a value of NG or LOSS is selected.`;
+            }
 
             await wh101PhysicalFixedAssetDetail.update({
                 ...req.body,
@@ -678,7 +682,7 @@ module.exports = {
                 attributes: [
                     'line_no','no','status_ok','status_ng','status_loss',
                     'request_sale','request_donation','request_write_off',
-                    'remark','asset_location'],
+                    'remark','asset_location','updatedAt'],
                 where: {
                     physical_fa_no_id,
                     company_id,
@@ -711,6 +715,7 @@ module.exports = {
                     BodyTxt += `|${details[i]?.remark || null}`; //remark
                     BodyTxt += `|${details[i]?.asset_location || null}`; //assetLocation
                     BodyTxt += `|${user}`; //userHHCreate
+                    BodyTxt += `|${moment(details[i]?.updatedAt).format('YYYY-MM-DD')}`; //Modify Date
                     BodyTxt += `|:E\n`; //สิ้นสุดบรรทัด
                 }
             }
